@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Image from "next/image";
 import { PlayIcon, PauseIcon } from "@radix-ui/react-icons";
 
@@ -42,9 +42,11 @@ function formatProgress(progress: number, duration: number) {
 function formatPlayedAt(played_at: string) {
 	const playedDate = new Date(played_at);
 	const now = new Date();
-	const diffInMinutes = Math.floor((now.getTime() - playedDate.getTime()) / (1000 * 60));
-	
-	if (diffInMinutes < 1) return 'Just now';
+	const diffInMinutes = Math.floor(
+		(now.getTime() - playedDate.getTime()) / (1000 * 60),
+	);
+
+	if (diffInMinutes < 1) return "Just now";
 	if (diffInMinutes < 60) return `${diffInMinutes}m ago`;
 	if (diffInMinutes < 1440) return `${Math.floor(diffInMinutes / 60)}h ago`;
 	return `${Math.floor(diffInMinutes / 1440)}d ago`;
@@ -56,35 +58,58 @@ function TrackCard({
 	isPaused = false,
 	progress_ms = 0,
 	played_at,
+	onTrackComplete,
+	onStateChange,
 }: {
 	track: Track;
 	isPlaying?: boolean;
 	isPaused?: boolean;
 	progress_ms?: number;
 	played_at?: string;
+	onTrackComplete?: () => void;
+	onStateChange?: (isNowPlaying: boolean) => void;
 }) {
 	const [currentProgress, setCurrentProgress] = useState(progress_ms);
+	const [prevIsPlaying, setPrevIsPlaying] = useState(isPlaying);
+
+	// Reset progress when track changes
+	useEffect(() => {
+		setCurrentProgress(progress_ms);
+	}, [progress_ms]);
+
+	// Handle play/pause state changes
+	useEffect(() => {
+		// If playing state changed
+		if (prevIsPlaying !== isPlaying && onStateChange) {
+			onStateChange(isPlaying);
+		}
+
+		setPrevIsPlaying(isPlaying);
+	}, [isPlaying, prevIsPlaying, onStateChange]);
 
 	useEffect(() => {
 		let interval: NodeJS.Timeout;
 		if (isPlaying) {
 			interval = setInterval(() => {
 				setCurrentProgress((prev) => {
-					if (prev >= track.duration_ms) return 0;
+					if (prev >= track.duration_ms) {
+						if (onTrackComplete) {
+							onTrackComplete();
+						}
+						return 0;
+					}
 					return prev + 1000;
 				});
 			}, 1000);
 		}
 		return () => clearInterval(interval);
-	}, [isPlaying, track.duration_ms]);
+	}, [isPlaying, track.duration_ms, onTrackComplete]);
 
 	return (
 		<div className="bg-zinc-900/50 backdrop-blur-sm rounded-lg p-4 w-full hover:bg-zinc-900/70 transition-colors relative">
 			{played_at && (
 				<div className="absolute top-3 right-3">
-					<p className="text-gray-500 text-xs">
-						{formatPlayedAt(played_at)}
-					</p>
+					<p className="text-gray-500 text-xs">{formatPlayedAt(played_at)}</p>
 				</div>
 			)}
 			<div className="flex items-start gap-3">
@@ -101,7 +126,7 @@ function TrackCard({
 						href={track.external_urls.spotify}
 						target="_blank"
 						rel="noopener noreferrer"
-						className="text-white hover:text-pink-500 transition-colors block truncate text-sm sm:text-base"
+						className="text-white hover:text-[#ffb6c1] transition-colors block truncate text-sm sm:text-base"
 					>
 						{track.name}
 					</a>
@@ -119,13 +144,15 @@ function TrackCard({
 								) : (
 									<PauseIcon className="w-3 h-3" />
 								)}
-								<span className={`text-xs uppercase font-medium ${isPlaying ? 'text-green-500' : 'text-orange-500'}`}>
-									{isPlaying ? 'playing' : 'paused'}
+								<span
+									className={`text-xs uppercase font-medium ${isPlaying ? "text-green-500" : "text-orange-500"}`}
+								>
+									{isPlaying ? "playing" : "paused"}
 								</span>
 							</div>
 							<div className="h-1 bg-zinc-800 rounded-full overflow-hidden">
 								<div
-									className="h-full bg-pink-500 transition-all duration-1000 ease-linear"
+									className="h-full bg-[#ffb6c1] transition-all duration-1000 ease-linear"
 									style={{
 										width: formatProgress(currentProgress, track.duration_ms),
 									}}
@@ -143,51 +170,99 @@ function TrackCard({
 	);
 }
 
-export default function SpotifyNowPlaying() {
+export default function SpotifyStatus() {
 	const [currentlyPlaying, setCurrentlyPlaying] =
 		useState<CurrentlyPlaying | null>(null);
 	const [recentTracks, setRecentTracks] = useState<RecentTrack[]>([]);
 	const [loading, setLoading] = useState(true);
+	const [previousPlayingState, setPreviousPlayingState] = useState<
+		boolean | null
+	>(null);
+
+	const fetchSpotifyData = async (showLoading = true) => {
+		try {
+			if (showLoading) {
+				setLoading(true);
+			}
+
+			const [currentRes, recentRes] = await Promise.all([
+				fetch("/api/spotify/now-playing"),
+				fetch("/api/spotify/recently-played"),
+			]);
+
+			if (currentRes.ok) {
+				const currentData = await currentRes.json();
+				setCurrentlyPlaying(currentData);
+			}
+
+			if (recentRes.ok) {
+				const recentData = await recentRes.json();
+				setRecentTracks(recentData?.items || []);
+			}
+		} catch (error) {
+			console.error("Failed to fetch Spotify data:", error);
+		} finally {
+			setLoading(false);
+		}
+	};
+
+	// Using useCallback to memoize the fetchSpotifyData function
+	const memoizedFetchData = useCallback(fetchSpotifyData, []);
+
+	// Separate useEffect to handle play state changes
+	useEffect(() => {
+		if (currentlyPlaying) {
+			// Check if play state has changed and update previous state
+			if (
+				previousPlayingState !== null &&
+				previousPlayingState !== currentlyPlaying.is_playing
+			) {
+				// State changed, but we don't show a message anymore
+			}
+
+			// Update previous state
+			setPreviousPlayingState(currentlyPlaying.is_playing || false);
+		}
+	}, [currentlyPlaying, previousPlayingState]);
 
 	useEffect(() => {
-		async function fetchData() {
-			try {
-				setLoading(true);
-				
-				const [currentRes, recentRes] = await Promise.all([
-					fetch("/api/spotify/now-playing"),
-					fetch("/api/spotify/recently-played"),
-				]);
+		// Initial fetch and set up regular polling interval
+		memoizedFetchData();
 
-				if (currentRes.ok) {
-					const currentData = await currentRes.json();
-					setCurrentlyPlaying(currentData);
-				}
+		// Set up a more frequent polling for play state changes (every 5 seconds)
+		const stateCheckInterval = setInterval(() => {
+			memoizedFetchData(false);
+		}, 5000);
 
-				if (recentRes.ok) {
-					const recentData = await recentRes.json();
-					setRecentTracks(recentData?.items || []);
-				}
-			} catch (error) {
-				console.error("Failed to fetch Spotify data:", error);
-			} finally {
-				setLoading(false);
-			}
-		}
-
-		fetchData();
-		const interval = setInterval(() => {
-			// For subsequent fetches, don't show loading
-			fetchData().then(() => setLoading(false));
+		// Set up less frequent full refresh (every 30 seconds)
+		const fullRefreshInterval = setInterval(() => {
+			memoizedFetchData(false);
 		}, 30000);
-		return () => clearInterval(interval);
-	}, []);
+
+		return () => {
+			clearInterval(stateCheckInterval);
+			clearInterval(fullRefreshInterval);
+		};
+	}, [memoizedFetchData]);
+
+	const handleTrackComplete = useCallback(() => {
+		// When track completes, fetch new data without showing loading state
+		memoizedFetchData(false);
+	}, [memoizedFetchData]);
+
+	const handleStateChange = useCallback(
+		(isNowPlaying: boolean) => {
+			// Force refresh data when user manually changes play state
+			memoizedFetchData(false);
+		},
+		[memoizedFetchData],
+	);
 
 	if (loading) {
 		return (
 			<div className="space-y-6 sm:space-y-8 w-full">
 				<section>
-					<h2 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4 text-pink-500">
+					<h2 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4 text-[#ffb6c1]">
 						Currently Playing
 					</h2>
 					<div className="space-y-3">
@@ -225,7 +300,7 @@ export default function SpotifyNowPlaying() {
 				</section>
 
 				<section>
-					<h2 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4 text-pink-500">
+					<h2 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4 text-[#ffb6c1]">
 						Recently Played
 					</h2>
 					<div className="space-y-3">
@@ -268,9 +343,10 @@ export default function SpotifyNowPlaying() {
 	return (
 		<div className="space-y-6 sm:space-y-8 w-full">
 			<section>
-				<h2 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4 text-pink-500">
+				<h2 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4 text-[#ffb6c1]">
 					Currently Playing
 				</h2>
+
 				<div className="space-y-3">
 					{currentlyPlaying?.item ? (
 						<TrackCard
@@ -278,6 +354,8 @@ export default function SpotifyNowPlaying() {
 							isPlaying={currentlyPlaying.is_playing}
 							isPaused={!currentlyPlaying.is_playing}
 							progress_ms={currentlyPlaying.progress_ms}
+							onTrackComplete={handleTrackComplete}
+							onStateChange={handleStateChange}
 						/>
 					) : (
 						<p className="text-gray-500 text-sm">Nothing playing right now</p>
@@ -286,15 +364,15 @@ export default function SpotifyNowPlaying() {
 			</section>
 
 			<section>
-				<h2 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4 text-pink-500">
+				<h2 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4 text-[#ffb6c1]">
 					Recently Played
 				</h2>
 				<div className="space-y-3">
 					{Array.isArray(recentTracks) && recentTracks.length > 0 ? (
 						recentTracks.map((item: RecentTrack) => (
-							<TrackCard 
-								key={item.played_at} 
-								track={item.track} 
+							<TrackCard
+								key={item.played_at}
+								track={item.track}
 								played_at={item.played_at}
 							/>
 						))

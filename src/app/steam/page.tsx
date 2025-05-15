@@ -3,14 +3,12 @@
 import { useEffect, useState } from "react";
 import SteamGameList from "@/components/SteamGameList";
 import SteamNowPlaying from "@/components/SteamNowPlaying";
-import type {
-	OwnedGame,
-	PlayerSummary,
-	RecentGame,
-} from "@/types/steam";
+import type { OwnedGame, PlayerSummary, RecentGame } from "@/types/steam";
 
 export default function SteamPage() {
-	const [playerSummary, setPlayerSummary] = useState<PlayerSummary | null>(null);
+	const [playerSummary, setPlayerSummary] = useState<PlayerSummary | null>(
+		null,
+	);
 	const [recentGames, setRecentGames] = useState<RecentGame[]>([]);
 	const [ownedGames, setOwnedGames] = useState<OwnedGame[]>([]);
 	const [loading, setLoading] = useState(true);

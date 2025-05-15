@@ -1,4 +1,4 @@
-import SpotifyNowPlaying from "@/components/SpotifyNowPlaying";
+import SpotifyStatus from "@/components/SpotifyStatus";
 
 export default function SpotifyPage() {
 	return (
@@ -6,7 +6,7 @@ export default function SpotifyPage() {
 			<h1 className="text-3xl md:text-4xl font-bold mb-6 tracking-wide text-white">
 				Spotify Activity
 			</h1>
-			<SpotifyNowPlaying />
+			<SpotifyStatus />
 		</div>
 	);
 }

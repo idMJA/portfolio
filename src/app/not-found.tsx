@@ -4,7 +4,7 @@ import { HomeIcon } from "@radix-ui/react-icons";
 export default function NotFound() {
 	return (
 		<div className="flex flex-col items-center justify-center min-h-[80vh] px-4 text-center">
-			<h1 className="text-8xl font-bold text-pink-500 mb-4">404</h1>
+			<h1 className="text-8xl font-bold text-[#ffb6c1] mb-4">404</h1>
 			<h2 className="text-2xl md:text-3xl font-bold text-white mb-6">
 				Page Not Found
 			</h2>
@@ -14,7 +14,7 @@ export default function NotFound() {
 			</p>
 			<Link
 				href="/"
-				className="flex items-center gap-2 px-6 py-3 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition-colors"
+				className="flex items-center gap-2 px-6 py-3 bg-[#ffb6c1] text-white rounded-lg hover:bg-[#ffb6c1]/80 transition-colors"
 			>
 				<HomeIcon className="w-5 h-5" />
 				<span>Back to Home</span>
