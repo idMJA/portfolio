@@ -13,6 +13,8 @@ import Link from "next/link";
 
 const repoLinks = [
 	"https://github.com/idMJA/Soundy",
+	"https://github.com/idMJA/accessify",
+	"https://github.com/idMJA/alya-chatbot",
 	"https://github.com/idMJA/youtube-trusted-session-generator",
 	"https://github.com/Catfein/Website",
 ];
