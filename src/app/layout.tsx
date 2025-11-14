@@ -1,12 +1,12 @@
 import type { Metadata, Viewport } from "next";
 import { Aldrich } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/Navbar";
-import Sakura from "@/components/Sakura";
 
 //Stats
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import Navbar from "@/components/Navbar";
+import Sakura from "@/components/Sakura";
 
 const aldrich = Aldrich({
 	weight: "400",

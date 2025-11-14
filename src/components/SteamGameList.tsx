@@ -1,10 +1,10 @@
 "use client";
 
-import type { OwnedGame, RecentGame } from "@/types/steam";
 import Image from "next/image";
 import Link from "next/link";
-import { useCallback, useRef, useState, useEffect } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
+import type { OwnedGame, RecentGame } from "@/types/steam";
 
 interface SteamGameListProps {
 	games: (OwnedGame | RecentGame)[];

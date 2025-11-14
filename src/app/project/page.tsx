@@ -1,5 +1,8 @@
 "use client";
+import { ExternalLink, GitFork, Github, Star } from "lucide-react";
+import Link from "next/link";
 import { useEffect, useState } from "react";
+import { Badge } from "@/components/ui/badge";
 import {
 	Card,
 	CardContent,
@@ -7,16 +10,21 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { ExternalLink, Github, Star, GitFork } from "lucide-react";
-import Link from "next/link";
 
 const repoLinks = [
 	"https://github.com/idMJA/Soundy",
+	"https://github.com/idMJA/Soundy-Dashboard",
+	"https://github.com/idMJA/portfolio",
+	"https://github.com/idMJA/portfolio-api",
 	"https://github.com/idMJA/accessify",
+	"https://github.com/idMJA/secretify",
+	"https://github.com/idMJA/LavaTools",
+	"https://github.com/idMJA/AgroHygra",
+	"https://github.com/idMJA/lang-bench",
+	"https://github.com/idMJA/WApi",
+	"https://github.com/idMJA/Lyrics",
 	"https://github.com/idMJA/alya-chatbot",
 	"https://github.com/idMJA/youtube-trusted-session-generator",
-	"https://github.com/Catfein/Website",
 ];
 
 type Project = {
@@ -33,16 +41,7 @@ type Project = {
 	createdAt: string;
 };
 
-function getLanguageColor(language: string): string {
-	const colors: Record<string, string> = {
-		TypeScript: "bg-blue-500",
-		JavaScript: "bg-yellow-500",
-		Python: "bg-green-500",
-		Java: "bg-orange-500",
-		"C++": "bg-purple-500",
-	};
-	return colors[language] || "bg-gray-500";
-}
+// Language color fallback is handled server-side in the projects API route.
 
 function SkeletonCard() {
 	return (
@@ -77,6 +76,9 @@ function SkeletonCard() {
 export default function ProjectPage() {
 	const [projects, setProjects] = useState<Project[]>([]);
 	const [loading, setLoading] = useState(true);
+	const [languageColors, setLanguageColors] = useState<Record<string, string>>(
+		{},
+	);
 
 	useEffect(() => {
 		async function fetchProjects() {
@@ -91,10 +93,15 @@ export default function ProjectPage() {
 			}
 			const data = await res.json();
 			setProjects(data.projects || []);
+			setLanguageColors(data.languageColors || {});
 			setLoading(false);
 		}
 		fetchProjects();
 	}, []);
+
+	function getColor(language: string) {
+		return languageColors[language];
+	}
 
 	return (
 		<div className="container mx-auto px-4 md:px-8 py-4 md:py-6 max-w-7xl">
@@ -134,7 +141,10 @@ export default function ProjectPage() {
 										<div className="flex items-center gap-2 text-sm text-gray-400">
 											<span className="flex items-center gap-1">
 												<div
-													className={`w-3 h-3 ${getLanguageColor(project.language)} rounded-full`}
+													className="w-3 h-3 rounded-full"
+													style={{
+														backgroundColor: getColor(project.language),
+													}}
 												/>
 												{project.language}
 											</span>

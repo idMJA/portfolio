@@ -2,9 +2,9 @@
 
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import type { LanyardResponse } from "@/types/discord";
-import { formatTimestamp } from "@/lib/utils";
 import Icon from "@/components/ui/Icon";
+import { formatTimestamp } from "@/lib/utils";
+import type { LanyardResponse } from "@/types/discord";
 
 // Platform icons configuration
 const platformIcons = {

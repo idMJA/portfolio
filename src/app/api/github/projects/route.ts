@@ -18,12 +18,32 @@ interface GitHubRepo {
 }
 
 export async function GET(request: NextRequest) {
+	async function fetchLanguageColors(): Promise<Record<string, string>> {
+		try {
+			const res = await fetch(
+				"https://raw.githubusercontent.com/ozh/github-colors/refs/heads/master/colors.json",
+				{ next: { revalidate: 3600 } },
+			);
+			if (!res.ok) return {};
+			const data = await res.json();
+			const map: Record<string, string> = {};
+			for (const [key, val] of Object.entries(data)) {
+				if (val && typeof val === "object" && "color" in val) {
+					const v = val as { color?: string };
+					if (v.color) map[key] = v.color;
+				}
+			}
+			return map;
+		} catch (_e) {
+			return {};
+		}
+	}
+
 	const url = request.nextUrl;
 	const searchParams = url.searchParams;
 	const reposParam = searchParams.getAll("repos");
 
 	if (reposParam && reposParam.length > 0) {
-		// User provides repo URLs directly
 		const repoUrls = reposParam.flatMap((r: string) =>
 			r
 				.split(",")
@@ -71,15 +91,27 @@ export async function GET(request: NextRequest) {
 		);
 
 		const projects = results.filter(Boolean);
+		const languageColors = await fetchLanguageColors();
+
+		// Ensure every project's language has a color; apply fallback server-side
+		const fallback = "#6b7280";
+		for (const p of projects) {
+			const lang = (p as { language?: string }).language || "Unknown";
+			if (!languageColors[lang]) {
+				languageColors[lang] = fallback;
+			}
+		}
+
 		return NextResponse.json({
 			success: true,
 			projects,
 			totalCount: projects.length,
+			languageColors,
 		});
 	}
 
-	const username = searchParams.get("username"); // Default username
-	const limit = Number.parseInt(searchParams.get("limit") || "10");
+	const username = searchParams.get("username");
+	const limit = Number.parseInt(searchParams.get("limit") || "10", 10);
 
 	try {
 		const headers: HeadersInit = {
@@ -87,12 +119,11 @@ export async function GET(request: NextRequest) {
 			"User-Agent": "Portfolio-App",
 		};
 
-		// Fetch user repositories
 		const reposResponse = await fetch(
 			`https://api.github.com/users/${username}/repos?sort=updated&per_page=100`,
 			{
 				headers,
-				next: { revalidate: 300 }, // Cache for 5 minutes
+				next: { revalidate: 300 },
 			},
 		);
 
@@ -112,10 +143,8 @@ export async function GET(request: NextRequest) {
 
 		const allRepos: GitHubRepo[] = await reposResponse.json();
 
-		// Filter out forked and archived repositories
 		const ownRepos = allRepos.filter((repo) => !repo.fork && !repo.archived);
 
-		// Show most recent repos
 		const filteredRepos = ownRepos
 			.sort(
 				(a, b) =>
@@ -123,7 +152,6 @@ export async function GET(request: NextRequest) {
 			)
 			.slice(0, limit);
 
-		// Transform the data for the frontend
 		const projects = filteredRepos.map((repo) => ({
 			id: repo.id,
 			name: repo.name,
@@ -139,11 +167,13 @@ export async function GET(request: NextRequest) {
 			createdAt: repo.created_at,
 		}));
 
+		const languageColors = await fetchLanguageColors();
 		return NextResponse.json({
 			success: true,
 			projects,
 			totalCount: projects.length,
 			username,
+			languageColors,
 		});
 	} catch (error) {
 		console.error("Error fetching GitHub data:", error);
@@ -154,6 +184,7 @@ export async function GET(request: NextRequest) {
 				error: "Failed to fetch GitHub data",
 				projects: [],
 				username,
+				languageColors: {},
 			},
 			{ status: 500 },
 		);

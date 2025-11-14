@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import Link from "next/link";
+import { useCallback, useEffect, useState } from "react";
 import AnimeList from "@/components/AnimeList";
 import type { MALAnimeList } from "@/types/mal";
-import Link from "next/link";
 
 export default function AnimePage() {
 	const [animeList, setAnimeList] = useState<MALAnimeList["data"]>([]);

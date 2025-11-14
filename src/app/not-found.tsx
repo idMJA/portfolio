@@ -1,5 +1,5 @@
-import Link from "next/link";
 import { HomeIcon } from "@radix-ui/react-icons";
+import Link from "next/link";
 
 export default function NotFound() {
 	return (

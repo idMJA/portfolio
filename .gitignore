@@ -25,6 +25,7 @@ bun.lock
 # misc
 .DS_Store
 *.pem
+.fuse_hidden*
 
 # debug
 npm-debug.log*

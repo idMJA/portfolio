@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
-import { Skeleton } from "./ui/skeleton";
 import { Progress } from "./ui/progress";
+import { Skeleton } from "./ui/skeleton";
 
 interface WakaTimeStats {
 	total_seconds: number;

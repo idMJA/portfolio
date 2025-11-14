@@ -1,22 +1,21 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import {
-	FaHome,
-	FaCode,
-	FaSpotify,
-	FaTv,
-	FaSteam,
 	FaChartBar,
+	FaCode,
 	FaComments,
 	FaDiscord,
-	FaGithub,
-	FaGlobe,
 	FaFile,
+	FaGithub,
+	FaHome,
+	FaSpotify,
+	FaSteam,
+	FaTv,
 } from "react-icons/fa";
-import Image from "next/image";
 
 export default function Navbar() {
 	const pathname = usePathname();
@@ -40,7 +39,7 @@ export default function Navbar() {
 		{ href: "/socials", icon: <FaComments size={20} />, title: "Socials" },
 	];
 
-	const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+	const _isMobile = typeof window !== "undefined" && window.innerWidth < 768;
 
 	return (
 		<>

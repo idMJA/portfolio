@@ -1,0 +1,1 @@
+bun lint && bun lint-staged

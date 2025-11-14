@@ -1,10 +1,5 @@
 "use client";
 
-import type { PlayerSummary } from "@/types/steam";
-import { Card, CardContent } from "./ui/card";
-import Image from "next/image";
-import { Skeleton } from "./ui/skeleton";
-import { useState } from "react";
 import {
 	CircleDot,
 	Clock,
@@ -12,6 +7,11 @@ import {
 	MinusCircle,
 	User2,
 } from "lucide-react";
+import Image from "next/image";
+import { useState } from "react";
+import type { PlayerSummary } from "@/types/steam";
+import { Card, CardContent } from "./ui/card";
+import { Skeleton } from "./ui/skeleton";
 
 const NOT_PLAYING_QUOTES = [
 	"Currently taking a break from gaming.",

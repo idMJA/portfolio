@@ -12,6 +12,8 @@ export const viewport: Viewport = {
 
 export default function ProjectLayout({
 	children,
-}: { children: React.ReactNode }) {
+}: {
+	children: React.ReactNode;
+}) {
 	return <>{children}</>;
 }

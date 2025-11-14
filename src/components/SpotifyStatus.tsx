@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { PauseIcon, PlayIcon } from "@radix-ui/react-icons";
 import Image from "next/image";
-import { PlayIcon, PauseIcon } from "@radix-ui/react-icons";
+import { useCallback, useEffect, useState } from "react";
 
 interface Track {
 	name: string;
@@ -251,7 +251,7 @@ export default function SpotifyStatus() {
 	}, [memoizedFetchData]);
 
 	const handleStateChange = useCallback(
-		(isNowPlaying: boolean) => {
+		(_isNowPlaying: boolean) => {
 			// Force refresh data when user manually changes play state
 			memoizedFetchData(false);
 		},

@@ -1,10 +1,8 @@
 "use client";
 
-import type { MALAnime } from "@/types/mal";
 import Image from "next/image";
-import { useMemo, useState, useRef, useCallback, useEffect } from "react";
 import Link from "next/link";
-import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
 	Select,
 	SelectContent,
@@ -12,6 +10,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
+import type { MALAnime } from "@/types/mal";
 
 interface AnimeListProps {
 	animeList: MALAnime[];
@@ -176,7 +175,7 @@ export default function AnimeList({ animeList }: AnimeListProps) {
 		const averageScore = animeList
 			.filter((anime) => anime.list_status.score > 0)
 			.reduce(
-				(acc, anime, index, array) =>
+				(acc, anime, _index, array) =>
 					acc + anime.list_status.score / array.length,
 				0,
 			);

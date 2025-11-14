@@ -1,11 +1,11 @@
 import type { Metadata, Viewport } from "next";
 import Link from "next/link";
 import {
-	FaGithub,
-	FaSteam,
-	FaSpotify,
-	FaReddit,
 	FaDiscord,
+	FaGithub,
+	FaReddit,
+	FaSpotify,
+	FaSteam,
 } from "react-icons/fa";
 import { SiBluesky } from "react-icons/si";
 
