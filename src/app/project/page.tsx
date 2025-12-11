@@ -19,11 +19,11 @@ const repoLinks = [
 	"https://github.com/idMJA/accessify",
 	"https://github.com/idMJA/secretify",
 	"https://github.com/idMJA/LavaTools",
+	"https://github.com/idMJA/qwesty",
+	"https://github.com/idMJA/LinkUp",
 	"https://github.com/idMJA/AgroHygra",
 	"https://github.com/idMJA/lang-bench",
 	"https://github.com/idMJA/WApi",
-	"https://github.com/idMJA/Lyrics",
-	"https://github.com/idMJA/alya-chatbot",
 	"https://github.com/idMJA/youtube-trusted-session-generator",
 ];
 
