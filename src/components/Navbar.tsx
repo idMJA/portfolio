@@ -39,8 +39,6 @@ export default function Navbar() {
 		{ href: "/socials", icon: <FaComments size={20} />, title: "Socials" },
 	];
 
-	const _isMobile = typeof window !== "undefined" && window.innerWidth < 768;
-
 	return (
 		<>
 			{/* Floating Left Header */}

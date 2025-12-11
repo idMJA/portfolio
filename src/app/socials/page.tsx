@@ -73,7 +73,7 @@ export default function SocialsPage() {
 
 			<p className="text-zinc-300 mb-8 max-w-2xl">
 				Connect with me on various social media platforms. Feel free to reach
-				out, follow, or just check out what I'm up to!
+				out, follow, or just check out what I&apos;m up to!
 			</p>
 
 			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

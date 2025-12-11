@@ -85,7 +85,7 @@ export default function ProjectPage() {
 			const params = repoLinks
 				.map((url) => `repos=${encodeURIComponent(url)}`)
 				.join("&");
-			const res = await fetch(`/api/github/projects?${params}`);
+			const res = await fetch(`/api/github/project?${params}`);
 			if (!res.ok) {
 				setProjects([]);
 				setLoading(false);
@@ -110,7 +110,7 @@ export default function ProjectPage() {
 					My Projects
 				</h1>
 				<p className="text-gray-300 text-lg">
-					A collection of projects I've worked on, showcasing various
+					A collection of projects I&apos;ve worked on, showcasing various
 					technologies and skills.
 				</p>
 			</div>

@@ -250,13 +250,10 @@ export default function SpotifyStatus() {
 		memoizedFetchData(false);
 	}, [memoizedFetchData]);
 
-	const handleStateChange = useCallback(
-		(_isNowPlaying: boolean) => {
-			// Force refresh data when user manually changes play state
-			memoizedFetchData(false);
-		},
-		[memoizedFetchData],
-	);
+	const handleStateChange = useCallback(() => {
+		// Force refresh data when user manually changes play state
+		memoizedFetchData(false);
+	}, [memoizedFetchData]);
 
 	if (loading) {
 		return (
