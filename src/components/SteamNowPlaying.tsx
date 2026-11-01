@@ -31,7 +31,11 @@ interface SteamNowPlayingProps {
 const getStatusInfo = (state: number) => {
 	switch (state) {
 		case 0:
-			return { text: "Offline", icon: MinusCircle, color: "text-gray-500" };
+			return {
+				text: "Offline",
+				icon: MinusCircle,
+				color: "text-muted-foreground",
+			};
 		case 1:
 			return { text: "Online", icon: CircleDot, color: "text-green-500" };
 		case 2:
@@ -53,7 +57,11 @@ const getStatusInfo = (state: number) => {
 				color: "text-cyan-500",
 			};
 		default:
-			return { text: "Unknown", icon: MinusCircle, color: "text-gray-500" };
+			return {
+				text: "Unknown",
+				icon: MinusCircle,
+				color: "text-muted-foreground",
+			};
 	}
 };
 

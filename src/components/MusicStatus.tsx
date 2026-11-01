@@ -2,7 +2,7 @@
 
 import { PauseIcon, PlayIcon } from "@radix-ui/react-icons";
 import Image from "next/image";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { formatDuration, formatPlayedAt, formatProgress } from "@/lib/music";
 import type { CurrentlyPlaying, RecentTrack, Track } from "@/types/music";
 
@@ -24,22 +24,20 @@ function TrackCard({
 	onStateChange?: (isNowPlaying: boolean) => void;
 }) {
 	const [currentProgress, setCurrentProgress] = useState(progress_ms);
-	const [prevIsPlaying, setPrevIsPlaying] = useState(isPlaying);
+	const prevIsPlayingRef = useRef(isPlaying);
 
-	// Reset progress when track changes
 	useEffect(() => {
+		// eslint-disable-next-line react-hooks/set-state-in-effect -- sync progress bar with external prop on track change
 		setCurrentProgress(progress_ms);
 	}, [progress_ms]);
 
-	// Handle play/pause state changes
+	// Handle play/pause state changes (ref avoids cascading renders)
 	useEffect(() => {
-		// If playing state changed
-		if (prevIsPlaying !== isPlaying && onStateChange) {
+		if (prevIsPlayingRef.current !== isPlaying && onStateChange) {
 			onStateChange(isPlaying);
 		}
-
-		setPrevIsPlaying(isPlaying);
-	}, [isPlaying, prevIsPlaying, onStateChange]);
+		prevIsPlayingRef.current = isPlaying;
+	}, [isPlaying, onStateChange]);
 
 	useEffect(() => {
 		let interval: NodeJS.Timeout;
@@ -63,10 +61,12 @@ function TrackCard({
 	const hasDuration = Boolean(track.duration_ms && track.duration_ms > 0);
 
 	return (
-		<div className="bg-zinc-900/50 backdrop-blur-sm rounded-lg p-4 w-full hover:bg-zinc-900/70 transition-colors relative">
+		<div className="bg-background/60 backdrop-blur-sm rounded-lg p-4 w-full hover:bg-card/80 transition-colors relative">
 			{played_at && (
 				<div className="absolute top-3 right-3">
-					<p className="text-gray-500 text-xs">{formatPlayedAt(played_at)}</p>
+					<p className="text-muted-foreground text-xs">
+						{formatPlayedAt(played_at)}
+					</p>
 				</div>
 			)}
 			<div className="flex items-start gap-3">
@@ -75,6 +75,7 @@ function TrackCard({
 						src={track.album.images[0]?.url || "/placeholder-album.jpg"}
 						alt={track.album.name}
 						fill
+						sizes="(max-width: 640px) 48px, 64px"
 						className="object-cover rounded-md"
 					/>
 				</div>
@@ -84,19 +85,19 @@ function TrackCard({
 							{!hasDuration && (
 								<div className="absolute top-0 right-0 flex items-end gap-1 h-5">
 									<span
-										className={`w-1 rounded-sm bg-[#ffb6c1] ${isPlaying ? "animate-pulse" : "opacity-60"}`}
+										className={`w-1 rounded-sm bg-muted/50 ${isPlaying ? "animate-pulse" : "opacity-60"}`}
 										style={{ height: "40%", animationDelay: "0ms" }}
 									/>
 									<span
-										className={`w-1 rounded-sm bg-[#ffb6c1] ${isPlaying ? "animate-pulse" : "opacity-60"}`}
+										className={`w-1 rounded-sm bg-muted/50 ${isPlaying ? "animate-pulse" : "opacity-60"}`}
 										style={{ height: "100%", animationDelay: "120ms" }}
 									/>
 									<span
-										className={`w-1 rounded-sm bg-[#ffb6c1] ${isPlaying ? "animate-pulse" : "opacity-60"}`}
+										className={`w-1 rounded-sm bg-muted/50 ${isPlaying ? "animate-pulse" : "opacity-60"}`}
 										style={{ height: "65%", animationDelay: "240ms" }}
 									/>
 									<span
-										className={`w-1 rounded-sm bg-[#ffb6c1] ${isPlaying ? "animate-pulse" : "opacity-60"}`}
+										className={`w-1 rounded-sm bg-muted/50 ${isPlaying ? "animate-pulse" : "opacity-60"}`}
 										style={{ height: "85%", animationDelay: "360ms" }}
 									/>
 								</div>
@@ -119,21 +120,21 @@ function TrackCard({
 						href={track.external_urls.spotify}
 						target="_blank"
 						rel="noopener noreferrer"
-						className="text-white hover:text-[#ffb6c1] transition-colors block truncate text-sm sm:text-base"
+						className="text-foreground hover:text-foreground/90 transition-colors block truncate text-sm sm:text-base"
 					>
 						{track.name}
 					</a>
-					<p className="text-gray-400 text-xs sm:text-sm truncate mt-0.5">
+					<p className="text-muted-foreground text-xs sm:text-sm truncate mt-0.5">
 						{track.artists.map((a) => a.name).join(", ")}
 					</p>
-					<p className="text-gray-500 text-xs truncate mt-0.5">
+					<p className="text-muted-foreground text-xs truncate mt-0.5">
 						{track.album.name}
 					</p>
 					{(isPlaying || isPaused) && hasDuration && (
 						<div className="mt-2">
-							<div className="h-1 bg-zinc-800 rounded-full overflow-hidden">
+							<div className="h-1 bg-card rounded-full overflow-hidden">
 								<div
-									className="h-full bg-[#ffb6c1] transition-all duration-1000 ease-linear"
+									className="h-full bg-muted/50 transition-all duration-1000 ease-linear"
 									style={{
 										width: formatProgress(
 											currentProgress,
@@ -142,7 +143,7 @@ function TrackCard({
 									}}
 								/>
 							</div>
-							<div className="flex justify-between text-xs text-gray-500 mt-1">
+							<div className="flex justify-between text-xs text-muted-foreground mt-1">
 								<span>{formatDuration(currentProgress)}</span>
 								<span>{formatDuration(track.duration_ms || 0)}</span>
 							</div>
@@ -159,9 +160,6 @@ export default function MusicStatus() {
 		useState<CurrentlyPlaying | null>(null);
 	const [recentTracks, setRecentTracks] = useState<RecentTrack[]>([]);
 	const [loading, setLoading] = useState(true);
-	const [previousPlayingState, setPreviousPlayingState] = useState<
-		boolean | null
-	>(null);
 
 	const fetchMusicData = async (showLoading = true) => {
 		try {
@@ -184,24 +182,8 @@ export default function MusicStatus() {
 	};
 
 	// Using useCallback to memoize the fetchMusicData function
+	/* eslint-disable react-hooks/use-memo, react-hooks/set-state-in-effect -- fetchMusicData stable; polling interval */
 	const memoizedFetchData = useCallback(fetchMusicData, []);
-
-	// Separate useEffect to handle play state changes
-	useEffect(() => {
-		if (currentlyPlaying) {
-			// Check if play state has changed and update previous state
-			if (
-				previousPlayingState !== null &&
-				previousPlayingState !== currentlyPlaying.is_playing
-			) {
-				// State changed, but we don't show a message anymore
-			}
-
-			// Update previous state
-			setPreviousPlayingState(currentlyPlaying.is_playing || false);
-		}
-	}, [currentlyPlaying, previousPlayingState]);
-
 	useEffect(() => {
 		// Initial fetch and set up regular polling interval
 		memoizedFetchData();
@@ -221,6 +203,7 @@ export default function MusicStatus() {
 			clearInterval(fullRefreshInterval);
 		};
 	}, [memoizedFetchData]);
+	/* eslint-enable react-hooks/use-memo, react-hooks/set-state-in-effect */
 
 	const handleTrackComplete = useCallback(() => {
 		// When track completes, fetch new data without showing loading state
@@ -236,37 +219,37 @@ export default function MusicStatus() {
 		return (
 			<div className="space-y-6 sm:space-y-8 w-full">
 				<section>
-					<h2 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4 text-[#ffb6c1]">
+					<h2 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4 text-foreground/90">
 						Currently Playing
 					</h2>
 					<div className="space-y-3">
-						<div className="bg-zinc-900/50 rounded-lg p-4 animate-pulse">
+						<div className="bg-background/60 rounded-lg p-4 animate-pulse">
 							<div className="flex items-start gap-3">
-								<div className="w-12 h-12 sm:w-16 sm:h-16 bg-zinc-800 rounded-md" />
+								<div className="w-12 h-12 sm:w-16 sm:h-16 bg-card rounded-md" />
 								<div className="flex-1 space-y-2">
-									<div className="h-4 bg-zinc-800 rounded w-3/4" />
-									<div className="h-3 bg-zinc-800 rounded w-1/2" />
-									<div className="h-3 bg-zinc-800 rounded w-1/3" />
+									<div className="h-4 bg-card rounded w-3/4" />
+									<div className="h-3 bg-card rounded w-1/2" />
+									<div className="h-3 bg-card rounded w-1/3" />
 								</div>
 							</div>
 						</div>
-						<div className="bg-zinc-900/50 rounded-lg p-4 animate-pulse">
+						<div className="bg-background/60 rounded-lg p-4 animate-pulse">
 							<div className="flex items-start gap-3">
-								<div className="w-12 h-12 sm:w-16 sm:h-16 bg-zinc-800 rounded-md" />
+								<div className="w-12 h-12 sm:w-16 sm:h-16 bg-card rounded-md" />
 								<div className="flex-1 space-y-2">
-									<div className="h-4 bg-zinc-800 rounded w-3/4" />
-									<div className="h-3 bg-zinc-800 rounded w-1/2" />
-									<div className="h-3 bg-zinc-800 rounded w-1/3" />
+									<div className="h-4 bg-card rounded w-3/4" />
+									<div className="h-3 bg-card rounded w-1/2" />
+									<div className="h-3 bg-card rounded w-1/3" />
 								</div>
 							</div>
 						</div>
-						<div className="bg-zinc-900/50 rounded-lg p-4 animate-pulse">
+						<div className="bg-background/60 rounded-lg p-4 animate-pulse">
 							<div className="flex items-start gap-3">
-								<div className="w-12 h-12 sm:w-16 sm:h-16 bg-zinc-800 rounded-md" />
+								<div className="w-12 h-12 sm:w-16 sm:h-16 bg-card rounded-md" />
 								<div className="flex-1 space-y-2">
-									<div className="h-4 bg-zinc-800 rounded w-3/4" />
-									<div className="h-3 bg-zinc-800 rounded w-1/2" />
-									<div className="h-3 bg-zinc-800 rounded w-1/3" />
+									<div className="h-4 bg-card rounded w-3/4" />
+									<div className="h-3 bg-card rounded w-1/2" />
+									<div className="h-3 bg-card rounded w-1/3" />
 								</div>
 							</div>
 						</div>
@@ -274,37 +257,37 @@ export default function MusicStatus() {
 				</section>
 
 				<section>
-					<h2 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4 text-[#ffb6c1]">
+					<h2 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4 text-foreground/90">
 						Recently Played
 					</h2>
 					<div className="space-y-3">
-						<div className="bg-zinc-900/50 rounded-lg p-4 animate-pulse">
+						<div className="bg-background/60 rounded-lg p-4 animate-pulse">
 							<div className="flex items-start gap-3">
-								<div className="w-12 h-12 sm:w-16 sm:h-16 bg-zinc-800 rounded-md" />
+								<div className="w-12 h-12 sm:w-16 sm:h-16 bg-card rounded-md" />
 								<div className="flex-1 space-y-2">
-									<div className="h-4 bg-zinc-800 rounded w-3/4" />
-									<div className="h-3 bg-zinc-800 rounded w-1/2" />
-									<div className="h-3 bg-zinc-800 rounded w-1/3" />
+									<div className="h-4 bg-card rounded w-3/4" />
+									<div className="h-3 bg-card rounded w-1/2" />
+									<div className="h-3 bg-card rounded w-1/3" />
 								</div>
 							</div>
 						</div>
-						<div className="bg-zinc-900/50 rounded-lg p-4 animate-pulse">
+						<div className="bg-background/60 rounded-lg p-4 animate-pulse">
 							<div className="flex items-start gap-3">
-								<div className="w-12 h-12 sm:w-16 sm:h-16 bg-zinc-800 rounded-md" />
+								<div className="w-12 h-12 sm:w-16 sm:h-16 bg-card rounded-md" />
 								<div className="flex-1 space-y-2">
-									<div className="h-4 bg-zinc-800 rounded w-3/4" />
-									<div className="h-3 bg-zinc-800 rounded w-1/2" />
-									<div className="h-3 bg-zinc-800 rounded w-1/3" />
+									<div className="h-4 bg-card rounded w-3/4" />
+									<div className="h-3 bg-card rounded w-1/2" />
+									<div className="h-3 bg-card rounded w-1/3" />
 								</div>
 							</div>
 						</div>
-						<div className="bg-zinc-900/50 rounded-lg p-4 animate-pulse">
+						<div className="bg-background/60 rounded-lg p-4 animate-pulse">
 							<div className="flex items-start gap-3">
-								<div className="w-12 h-12 sm:w-16 sm:h-16 bg-zinc-800 rounded-md" />
+								<div className="w-12 h-12 sm:w-16 sm:h-16 bg-card rounded-md" />
 								<div className="flex-1 space-y-2">
-									<div className="h-4 bg-zinc-800 rounded w-3/4" />
-									<div className="h-3 bg-zinc-800 rounded w-1/2" />
-									<div className="h-3 bg-zinc-800 rounded w-1/3" />
+									<div className="h-4 bg-card rounded w-3/4" />
+									<div className="h-3 bg-card rounded w-1/2" />
+									<div className="h-3 bg-card rounded w-1/3" />
 								</div>
 							</div>
 						</div>
@@ -317,7 +300,7 @@ export default function MusicStatus() {
 	return (
 		<div className="space-y-6 sm:space-y-8 w-full">
 			<section>
-				<h2 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4 text-[#ffb6c1]">
+				<h2 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4 text-foreground/90">
 					Currently Playing
 				</h2>
 
@@ -332,13 +315,15 @@ export default function MusicStatus() {
 							onStateChange={handleStateChange}
 						/>
 					) : (
-						<p className="text-gray-500 text-sm">Nothing playing right now</p>
+						<p className="text-muted-foreground text-sm">
+							Nothing playing right now
+						</p>
 					)}
 				</div>
 			</section>
 
 			<section>
-				<h2 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4 text-[#ffb6c1]">
+				<h2 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4 text-foreground/90">
 					Recently Played
 				</h2>
 				<div className="space-y-3">
@@ -351,7 +336,9 @@ export default function MusicStatus() {
 							/>
 						))
 					) : (
-						<p className="text-gray-500 text-sm">No recently played tracks</p>
+						<p className="text-muted-foreground text-sm">
+							No recently played tracks
+						</p>
 					)}
 				</div>
 			</section>

@@ -50,7 +50,7 @@ bun install
 3. Set up environment variables in `.env`:
 ```env
 # API URL
-NEXT_PUBLIC_API_URL=your_portfolio_api_url
+API_URL=your_portfolio_api_url
 ```
 
 4. Run the development server

@@ -5,12 +5,17 @@ export async function GET(request: NextRequest) {
 		const url = new URL(request.url);
 		const search = url.search || "";
 
-		const paramUrl = `${process.env.NEXT_PUBLIC_API_URL}/github/project${search}`;
+		const apiUrl = process.env.API_URL;
+		if (!apiUrl) {
+			throw new Error("API URL not configured");
+		}
+		const paramUrl = `${apiUrl}/github/project${search}`;
 
 		const response = await fetch(paramUrl, {
 			headers: {
 				"Content-Type": "application/json",
 			},
+			next: { revalidate: 3600 },
 		});
 
 		if (!response.ok) {

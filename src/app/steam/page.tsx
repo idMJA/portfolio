@@ -60,7 +60,7 @@ export default function SteamPage() {
 			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
 				<div className="space-y-8">
 					<h1 className="text-4xl font-bold">Steam Profile</h1>
-					<div className="text-zinc-400">Loading Steam data...</div>
+					<div className="text-muted-foreground">Loading Steam data...</div>
 				</div>
 			</div>
 		);
@@ -71,7 +71,7 @@ export default function SteamPage() {
 			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
 				<div className="space-y-4">
 					<h1 className="text-4xl font-bold text-red-500">Error</h1>
-					<p className="text-zinc-400">{error}</p>
+					<p className="text-muted-foreground">{error}</p>
 				</div>
 			</div>
 		);

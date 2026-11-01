@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 
 export async function GET() {
 	try {
-		const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+		const apiUrl = process.env.API_URL;
 		if (!apiUrl) {
 			throw new Error("API URL not configured");
 		}
@@ -11,6 +11,7 @@ export async function GET() {
 			headers: {
 				"Content-Type": "application/json",
 			},
+			next: { revalidate: 60 },
 		});
 
 		if (!response.ok) {

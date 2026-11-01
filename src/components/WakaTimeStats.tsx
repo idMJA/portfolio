@@ -87,7 +87,9 @@ export default function WakaTimeStats() {
 		<Card className="w-full">
 			<CardHeader>
 				<CardTitle>All-Time Coding Activity</CardTitle>
-				<p className="text-sm text-gray-400">{stats.human_readable_range}</p>
+				<p className="text-sm text-muted-foreground">
+					{stats.human_readable_range}
+				</p>
 			</CardHeader>
 			<CardContent>
 				<div className="space-y-6">

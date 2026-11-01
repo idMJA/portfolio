@@ -1,19 +1,13 @@
-import type { Metadata, Viewport } from "next";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-	title: "Steam Stats",
-	description: "Steam game stats and now playing info",
+	title: "Steam Profile",
+	description: "Steam profile and recent games for Moehammad Joesoef Aldri.",
+	robots: { index: false, follow: false },
 };
 
-export const viewport: Viewport = {
-	width: "device-width",
-	initialScale: 1,
-};
+import type { ReactNode } from "react";
 
-export default function SteamLayout({
-	children,
-}: {
-	children: React.ReactNode;
-}) {
+export default function Layout({ children }: { children: ReactNode }) {
 	return <>{children}</>;
 }

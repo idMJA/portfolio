@@ -1,664 +1,233 @@
 import Image from "next/image";
 import DiscordStatus from "@/components/DiscordStatus";
 
+const techData: {
+	name: string;
+	url: string;
+	icon: string;
+	goSkill?: boolean;
+}[][] = [
+	[
+		{
+			name: "HTML",
+			url: "https://developer.mozilla.org/en-US/docs/Web/HTML",
+			icon: "html",
+		},
+		{
+			name: "CSS",
+			url: "https://developer.mozilla.org/en-US/docs/Web/CSS",
+			icon: "css",
+		},
+		{ name: "React", url: "https://reactjs.org/", icon: "react" },
+		{ name: "Next.js", url: "https://nextjs.org/", icon: "nextjs" },
+		{ name: "Tailwind CSS", url: "https://tailwindcss.com/", icon: "tailwind" },
+		{
+			name: "Shadcn UI",
+			url: "https://ui.shadcn.com/",
+			icon: "shadcn",
+			goSkill: true,
+		},
+	],
+	[
+		{ name: "Express", url: "https://expressjs.com/", icon: "express" },
+		{
+			name: "Elysia",
+			url: "https://elysiajs.com/",
+			icon: "elysia",
+			goSkill: true,
+		},
+		{ name: "Hono", url: "https://hono.dev/", icon: "hono", goSkill: true },
+	],
+	[
+		{
+			name: "JavaScript",
+			url: "https://developer.mozilla.org/en-US/docs/Web/JavaScript",
+			icon: "js",
+		},
+		{ name: "TypeScript", url: "https://www.typescriptlang.org/", icon: "ts" },
+		{ name: "Java", url: "https://www.java.com/", icon: "java" },
+		{ name: "Go", url: "https://go.dev/", icon: "go" },
+		{ name: "Rust", url: "https://www.rust-lang.org/", icon: "rust" },
+		{ name: "Python", url: "https://python.org/", icon: "py" },
+	],
+	[
+		{ name: "Node.js", url: "https://nodejs.org/", icon: "nodejs" },
+		{ name: "Bun", url: "https://bun.com/", icon: "bun" },
+		{ name: "Git", url: "https://git-scm.com/", icon: "git" },
+		{ name: "Docker", url: "https://www.docker.com/", icon: "docker" },
+		{
+			name: "GitHub Actions",
+			url: "https://github.com/features/actions",
+			icon: "githubactions",
+		},
+		{ name: "Vercel", url: "https://vercel.com/", icon: "vercel" },
+		{ name: "Linux", url: "https://www.linux.org/", icon: "linux" },
+		{
+			name: "Windows",
+			url: "https://www.microsoft.com/windows",
+			icon: "windows",
+		},
+	],
+	[
+		{ name: "VS Code", url: "https://code.visualstudio.com/", icon: "vscode" },
+		{
+			name: "IntelliJ IDEA",
+			url: "https://www.jetbrains.com/idea/",
+			icon: "idea",
+		},
+		{ name: "GitHub", url: "https://github.com/", icon: "github" },
+		{ name: "Postman", url: "https://www.postman.com/", icon: "postman" },
+		{
+			name: "Android Studio",
+			url: "https://developer.android.com/studio",
+			icon: "androidstudio",
+		},
+		{
+			name: "DataGrip",
+			url: "https://www.jetbrains.com/datagrip/",
+			icon: "datagrip",
+			goSkill: true,
+		},
+		{
+			name: "Biome",
+			url: "https://biomejs.dev/",
+			icon: "biome",
+			goSkill: true,
+		},
+	],
+	[
+		{ name: "Turso", url: "https://turso.tech/", icon: "turso", goSkill: true },
+		{ name: "MySQL", url: "https://www.mysql.com/", icon: "mysql" },
+		{ name: "Prisma", url: "https://www.prisma.io/", icon: "prisma" },
+		{
+			name: "Drizzle",
+			url: "https://orm.drizzle.team/",
+			icon: "drizzle",
+			goSkill: true,
+		},
+		{
+			name: "PostgreSQL",
+			url: "https://www.postgresql.org/",
+			icon: "postgresql",
+		},
+		{
+			name: "LibSQL",
+			url: "https://docs.turso.tech/libsql",
+			icon: "libsql",
+			goSkill: true,
+		},
+		{ name: "MongoDB", url: "https://www.mongodb.com/", icon: "mongodb" },
+	],
+];
+
+const sectionTitles = [
+	"Web Development",
+	"Backend",
+	"Languages",
+	"Ecosystem & Devops",
+	"Toolstack",
+	"Databases & ORM",
+];
+
+function TechIcon({ tech }: { tech: (typeof techData)[number][number] }) {
+	return (
+		<a
+			href={tech.url}
+			target="_blank"
+			rel="noopener noreferrer"
+			className="group bg-muted/50 p-2 rounded-md transition-all hover:bg-muted/80 hover:-translate-y-0.5"
+			aria-label={tech.name}
+		>
+			<Image
+				src={
+					tech.goSkill
+						? `https://go-skill-icons.vercel.app/api/icons?i=${tech.icon}`
+						: `https://skillicons.dev/icons?i=${tech.icon}`
+				}
+				alt={tech.name}
+				width={28}
+				height={28}
+				unoptimized
+				className="transition-transform group-hover:scale-110"
+			/>
+		</a>
+	);
+}
+
 export default function Home() {
 	return (
-		<div className="container mx-auto px-4 md:px-8 py-4 md:py-6 max-w-7xl">
-			<section className="mb-8 md:mb-12">
-				<h1 className="text-3xl md:text-4xl font-bold mb-4 tracking-wide">
-					<span className="text-[#ffb6c1]">About</span>
-					<span className="text-white"> Me</span>
-					<span className="text-[#ffb6c1]"> ٩(◕‿◕｡)۶</span>
-				</h1>
+		<div className="container mx-auto px-4 md:px-8 py-8 max-w-7xl">
+			<section className="relative mb-16">
+				<span
+					aria-hidden
+					className="jp-watermark absolute -left-4 md:-left-8 top-1/2 -translate-y-1/2 text-[11rem] md:text-[15rem]"
+				>
+					開発者
+				</span>
+				<div className="relative">
+					<h1 className="text-3xl md:text-5xl font-semibold tracking-display text-foreground mb-3">
+						MJ builds web apps and server systems.
+					</h1>
+					<p className="text-foreground/80 text-[15px] leading-relaxed max-w-[65ch] mb-10">
+						Developer in Banda Aceh. TypeScript, Next.js, and Linux at the core.
+						Mostly building Discord bots and small web tools.
+					</p>
 
-				<div className="flex flex-col lg:flex-row gap-6 lg:gap-12">
-					<div className="flex-1 space-y-4 card-anime p-6">
-						<h3 className="text-lg md:text-xl text-[#ffb6c1]">
-							Discord Bot & Frontend Developer
-						</h3>
-
-						<p className="text-gray-300 leading-relaxed">
-							I am not a Discord Bot Developer and a beginner Frontend Developer
-							who enjoys creating discord bots and websites maybe? I like to
-							create weird and somewhat different things, sorry I&apos;m still a
-							beginner. (つ≧▽≦)つ
-						</p>
-
-						<p className="text-gray-300 leading-relaxed">
-							My favorite Programming Languages are JavaScript and TypeScript. I
-							also like to build websites using Next.JS, and Tailwind CSS.
-							Sometimes I use Java or Rust for backend. For Discord Bots I like
-							to create using Discord.JS and Seyfert as the library.
-						</p>
-
-						<div className="pt-2">
-							<button type="button" className="btn-anime">
-								My Projects ➜
-							</button>
-						</div>
-					</div>
-
-					<div className="w-full lg:w-[400px] flex-shrink-0">
-						<div className="card-anime p-4">
-							<h3 className="text-lg font-medium text-[#ffb6c1] mb-4 tracking-wide text-center">
-								Discord Status ♡
-							</h3>
-							<DiscordStatus />
-						</div>
+					<div className="flex gap-3">
+						<a href="/project" className="btn-primary text-sm">
+							Projects
+						</a>
+						<a
+							href="https://github.com/idMJA"
+							className="btn-ghost text-sm"
+							target="_blank"
+							rel="noopener noreferrer"
+						>
+							GitHub
+						</a>
 					</div>
 				</div>
 			</section>
 
+			<div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-6 mb-16">
+				<div className="card-modern p-6">
+					<p className="text-xs text-foreground/70 font-mono-geist uppercase tracking-wide mb-3">
+						Currently
+					</p>
+					<p className="text-foreground/90 leading-relaxed text-[15px]">
+						Primary stack: TypeScript, Next.js, Tailwind CSS, and Linux
+						administration. Backend work with Node.js, Elysia, and Hono.
+						Currently maintaining Discord bots, small web tools, and a few
+						Debian servers.
+					</p>
+				</div>
+
+				<div className="card-modern p-5">
+					<p className="text-xs text-foreground/70 font-mono-geist uppercase tracking-wide mb-3">
+						Discord
+					</p>
+					<DiscordStatus />
+				</div>
+			</div>
+
 			<section>
-				<div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
-					{/* Web Development */}
-					<div className="card-anime p-4 md:p-6">
-						<h4 className="text-lg font-medium text-[#ffb6c1] mb-4 tracking-wide">
-							Frontend ✧*。
-						</h4>
-						<div className="flex flex-wrap gap-3">
-							<a
-								href="https://developer.mozilla.org/en-US/docs/Web/HTML"
-								target="_blank"
-								rel="noopener noreferrer"
-								className="group bg-[#1F1B2E] p-2 rounded-lg transition-transform hover:scale-105"
-							>
-								<Image
-									src="https://skillicons.dev/icons?i=html"
-									alt="HTML"
-									width={40}
-									height={40}
-									unoptimized
-									className="transition-transform group-hover:scale-110"
-								/>
-							</a>
-							<a
-								href="https://developer.mozilla.org/en-US/docs/Web/CSS"
-								target="_blank"
-								rel="noopener noreferrer"
-								className="group bg-[#1F1B2E] p-2 rounded-lg transition-transform hover:scale-105"
-							>
-								<Image
-									src="https://skillicons.dev/icons?i=css"
-									alt="CSS"
-									width={40}
-									height={40}
-									unoptimized
-									className="transition-transform group-hover:scale-110"
-								/>
-							</a>
-							<a
-								href="https://reactjs.org/"
-								target="_blank"
-								rel="noopener noreferrer"
-								className="group bg-[#1F1B2E] p-2 rounded-lg transition-transform hover:scale-105"
-							>
-								<Image
-									src="https://skillicons.dev/icons?i=react"
-									alt="React"
-									width={40}
-									height={40}
-									unoptimized
-									className="transition-transform group-hover:scale-110"
-								/>
-							</a>
-							<a
-								href="https://nextjs.org/"
-								target="_blank"
-								rel="noopener noreferrer"
-								className="group bg-[#1F1B2E] p-2 rounded-lg transition-transform hover:scale-105"
-							>
-								<Image
-									src="https://skillicons.dev/icons?i=nextjs"
-									alt="Next.js"
-									width={40}
-									height={40}
-									unoptimized
-									className="transition-transform group-hover:scale-110"
-								/>
-							</a>
-							<a
-								href="https://tailwindcss.com/"
-								target="_blank"
-								rel="noopener noreferrer"
-								className="group bg-[#1F1B2E] p-2 rounded-lg transition-transform hover:scale-105"
-							>
-								<Image
-									src="https://skillicons.dev/icons?i=tailwind"
-									alt="Tailwind CSS"
-									width={40}
-									height={40}
-									unoptimized
-									className="transition-transform group-hover:scale-110"
-								/>
-							</a>
-							<a
-								href="https://ui.shadcn.com/"
-								target="_blank"
-								rel="noopener noreferrer"
-								className="group bg-[#1F1B2E] p-2 rounded-lg transition-transform hover:scale-105"
-							>
-								<Image
-									src="https://go-skill-icons.vercel.app/api/icons?i=shadcn"
-									alt="Shadcn UI"
-									width={40}
-									height={40}
-									unoptimized
-									className="transition-transform group-hover:scale-110"
-								/>
-							</a>
-						</div>
-					</div>
+				<h2 className="text-xl md:text-2xl font-semibold tracking-heading text-foreground mb-6">
+					Stack
+				</h2>
 
-					{/* Backend */}
-					<div className="card-anime p-4 md:p-6">
-						<h4 className="text-lg font-medium text-[#ffb6c1] mb-4 tracking-wide">
-							Backend ✧*。
-						</h4>
-						<div className="flex flex-wrap gap-3">
-							<a
-								href="https://expressjs.com/"
-								target="_blank"
-								rel="noopener noreferrer"
-								className="group bg-[#1F1B2E] p-2 rounded-lg transition-transform hover:scale-105"
-							>
-								<Image
-									src="https://skillicons.dev/icons?i=express"
-									alt="Express"
-									width={40}
-									height={40}
-									unoptimized
-									className="transition-transform group-hover:scale-110"
-								/>
-							</a>
-							<a
-								href="https://elysiajs.com/"
-								target="_blank"
-								rel="noopener noreferrer"
-								className="group bg-[#1F1B2E] p-2 rounded-lg transition-transform hover:scale-105"
-							>
-								<Image
-									src="https://go-skill-icons.vercel.app/api/icons?i=elysia"
-									alt="Elysia"
-									width={40}
-									height={40}
-									unoptimized
-									className="transition-transform group-hover:scale-110"
-								/>
-							</a>
-							<a
-								href="https://hono.dev/"
-								target="_blank"
-								rel="noopener noreferrer"
-								className="group bg-[#1F1B2E] p-2 rounded-lg transition-transform hover:scale-105"
-							>
-								<Image
-									src="https://go-skill-icons.vercel.app/api/icons?i=hono"
-									alt="Hono"
-									width={40}
-									height={40}
-									unoptimized
-									className="transition-transform group-hover:scale-110"
-								/>
-							</a>
+				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+					{techData.map((group, idx) => (
+						<div key={sectionTitles[idx]} className="card-modern p-5">
+							<h3 className="text-xs text-foreground/80 font-mono-geist uppercase tracking-wide mb-4">
+								{sectionTitles[idx]}
+							</h3>
+							<div className="flex flex-wrap gap-2">
+								{group.map((tech) => (
+									<TechIcon key={tech.name} tech={tech} />
+								))}
+							</div>
 						</div>
-					</div>
-
-					{/* Languages */}
-					<div className="card-anime p-4 md:p-6">
-						<h4 className="text-lg font-medium text-[#ffb6c1] mb-4 tracking-wide">
-							Languages ✧*。
-						</h4>
-						<div className="flex flex-wrap gap-3">
-							<a
-								href="https://developer.mozilla.org/en-US/docs/Web/JavaScript"
-								target="_blank"
-								rel="noopener noreferrer"
-								className="group bg-[#1F1B2E] p-2 rounded-lg transition-transform hover:scale-105"
-							>
-								<Image
-									src="https://skillicons.dev/icons?i=js"
-									alt="JavaScript"
-									width={40}
-									height={40}
-									unoptimized
-									className="transition-transform group-hover:scale-110"
-								/>
-							</a>
-							<a
-								href="https://www.typescriptlang.org/"
-								target="_blank"
-								rel="noopener noreferrer"
-								className="group bg-[#1F1B2E] p-2 rounded-lg transition-transform hover:scale-105"
-							>
-								<Image
-									src="https://skillicons.dev/icons?i=ts"
-									alt="TypeScript"
-									width={40}
-									height={40}
-									unoptimized
-									className="transition-transform group-hover:scale-110"
-								/>
-							</a>
-							<a
-								href="https://www.java.com/"
-								target="_blank"
-								rel="noopener noreferrer"
-								className="group bg-[#1F1B2E] p-2 rounded-lg transition-transform hover:scale-105"
-							>
-								<Image
-									src="https://skillicons.dev/icons?i=java"
-									alt="Java"
-									width={40}
-									height={40}
-									unoptimized
-									className="transition-transform group-hover:scale-110"
-								/>
-							</a>
-							<a
-								href="https://go.dev/"
-								target="_blank"
-								rel="noopener noreferrer"
-								className="group bg-[#1F1B2E] p-2 rounded-lg transition-transform hover:scale-105"
-							>
-								<Image
-									src="https://skillicons.dev/icons?i=go"
-									alt="Go"
-									width={40}
-									height={40}
-									unoptimized
-									className="transition-transform group-hover:scale-110"
-								/>
-							</a>
-							<a
-								href="https://www.rust-lang.org/"
-								target="_blank"
-								rel="noopener noreferrer"
-								className="group bg-[#1F1B2E] p-2 rounded-lg transition-transform hover:scale-105"
-							>
-								<Image
-									src="https://skillicons.dev/icons?i=rust"
-									alt="Rust"
-									width={40}
-									height={40}
-									unoptimized
-									className="transition-transform group-hover:scale-110"
-								/>
-							</a>
-							<a
-								href="https://python.org/"
-								target="_blank"
-								rel="noopener noreferrer"
-								className="group bg-[#1F1B2E] p-2 rounded-lg transition-transform hover:scale-105"
-							>
-								<Image
-									src="https://skillicons.dev/icons?i=python"
-									alt="Python"
-									width={40}
-									height={40}
-									unoptimized
-									className="transition-transform group-hover:scale-110"
-								/>
-							</a>
-						</div>
-					</div>
-
-					{/* Ecosystem & Devops */}
-					<div className="card-anime p-4 md:p-6">
-						<h4 className="text-lg font-medium text-[#ffb6c1] mb-4 tracking-wide">
-							Ecosystem & Devops ✧*。
-						</h4>
-						<div className="flex flex-wrap gap-3">
-							<a
-								href="https://nodejs.org/"
-								target="_blank"
-								rel="noopener noreferrer"
-								className="group bg-[#1F1B2E] p-2 rounded-lg transition-transform hover:scale-105"
-							>
-								<Image
-									src="https://skillicons.dev/icons?i=nodejs"
-									alt="Node.js"
-									width={40}
-									height={40}
-									unoptimized
-									className="transition-transform group-hover:scale-110"
-								/>
-							</a>
-							<a
-								href="https://bun.com/"
-								target="_blank"
-								rel="noopener noreferrer"
-								className="group bg-[#1F1B2E] p-2 rounded-lg transition-transform hover:scale-105"
-							>
-								<Image
-									src="https://skillicons.dev/icons?i=bun"
-									alt="Bun"
-									width={40}
-									height={40}
-									unoptimized
-									className="transition-transform group-hover:scale-110"
-								/>
-							</a>
-							<a
-								href="https://git-scm.com/"
-								target="_blank"
-								rel="noopener noreferrer"
-								className="group bg-[#1F1B2E] p-2 rounded-lg transition-transform hover:scale-105"
-							>
-								<Image
-									src="https://skillicons.dev/icons?i=git"
-									alt="Git"
-									width={40}
-									height={40}
-									unoptimized
-									className="transition-transform group-hover:scale-110"
-								/>
-							</a>
-							<a
-								href="https://www.docker.com/"
-								target="_blank"
-								rel="noopener noreferrer"
-								className="group bg-[#1F1B2E] p-2 rounded-lg transition-transform hover:scale-105"
-							>
-								<Image
-									src="https://skillicons.dev/icons?i=docker"
-									alt="Docker"
-									width={40}
-									height={40}
-									unoptimized
-									className="transition-transform group-hover:scale-110"
-								/>
-							</a>
-							<a
-								href="https://github.com/features/actions"
-								target="_blank"
-								rel="noopener noreferrer"
-								className="group bg-[#1F1B2E] p-2 rounded-lg transition-transform hover:scale-105"
-							>
-								<Image
-									src="https://skillicons.dev/icons?i=githubactions"
-									alt="GitHub Actions"
-									width={40}
-									height={40}
-									unoptimized
-									className="transition-transform group-hover:scale-110"
-								/>
-							</a>
-							<a
-								href="https://vercel.com/"
-								target="_blank"
-								rel="noopener noreferrer"
-								className="group bg-[#1F1B2E] p-2 rounded-lg transition-transform hover:scale-105"
-							>
-								<Image
-									src="https://skillicons.dev/icons?i=vercel"
-									alt="Vercel"
-									width={40}
-									height={40}
-									unoptimized
-									className="transition-transform group-hover:scale-110"
-								/>
-							</a>
-							<a
-								href="https://www.linux.org/"
-								target="_blank"
-								rel="noopener noreferrer"
-								className="group bg-[#1F1B2E] p-2 rounded-lg transition-transform hover:scale-105"
-							>
-								<Image
-									src="https://skillicons.dev/icons?i=linux"
-									alt="Linux"
-									width={40}
-									height={40}
-									unoptimized
-									className="transition-transform group-hover:scale-110"
-								/>
-							</a>
-							<a
-								href="https://www.microsoft.com/windows"
-								target="_blank"
-								rel="noopener noreferrer"
-								className="group bg-[#1F1B2E] p-2 rounded-lg transition-transform hover:scale-105"
-							>
-								<Image
-									src="https://skillicons.dev/icons?i=windows"
-									alt="Windows"
-									width={40}
-									height={40}
-									unoptimized
-									className="transition-transform group-hover:scale-110"
-								/>
-							</a>
-						</div>
-					</div>
-
-					{/* Toolstack */}
-					<div className="card-anime p-4 md:p-6">
-						<h4 className="text-lg font-medium text-[#ffb6c1] mb-4 tracking-wide">
-							Toolstack ✧*。
-						</h4>
-						<div className="flex flex-wrap gap-3">
-							<a
-								href="https://code.visualstudio.com/"
-								target="_blank"
-								rel="noopener noreferrer"
-								className="group bg-[#1F1B2E] p-2 rounded-lg transition-transform hover:scale-105"
-							>
-								<Image
-									src="https://skillicons.dev/icons?i=vscode"
-									alt="VS Code"
-									width={40}
-									height={40}
-									unoptimized
-									className="transition-transform group-hover:scale-110"
-								/>
-							</a>
-							<a
-								href="https://www.jetbrains.com/idea/"
-								target="_blank"
-								rel="noopener noreferrer"
-								className="group bg-[#1F1B2E] p-2 rounded-lg transition-transform hover:scale-105"
-							>
-								<Image
-									src="https://skillicons.dev/icons?i=idea"
-									alt="IntelliJ IDEA"
-									width={40}
-									height={40}
-									unoptimized
-									className="transition-transform group-hover:scale-110"
-								/>
-							</a>
-							<a
-								href="https://github.com/"
-								target="_blank"
-								rel="noopener noreferrer"
-								className="group bg-[#1F1B2E] p-2 rounded-lg transition-transform hover:scale-105"
-							>
-								<Image
-									src="https://skillicons.dev/icons?i=github"
-									alt="GitHub"
-									width={40}
-									height={40}
-									unoptimized
-									className="transition-transform group-hover:scale-110"
-								/>
-							</a>
-							<a
-								href="https://www.postman.com/"
-								target="_blank"
-								rel="noopener noreferrer"
-								className="group bg-[#1F1B2E] p-2 rounded-lg transition-transform hover:scale-105"
-							>
-								<Image
-									src="https://skillicons.dev/icons?i=postman"
-									alt="Postman"
-									width={40}
-									height={40}
-									unoptimized
-									className="transition-transform group-hover:scale-110"
-								/>
-							</a>
-							<a
-								href="https://developer.android.com/studio"
-								target="_blank"
-								rel="noopener noreferrer"
-								className="group bg-[#1F1B2E] p-2 rounded-lg transition-transform hover:scale-105"
-							>
-								<Image
-									src="https://skillicons.dev/icons?i=androidstudio"
-									alt="Android Studio"
-									width={40}
-									height={40}
-									unoptimized
-									className="transition-transform group-hover:scale-110"
-								/>
-							</a>
-							<a
-								href="https://www.jetbrains.com/datagrip/"
-								target="_blank"
-								rel="noopener noreferrer"
-								className="group bg-[#1F1B2E] p-2 rounded-lg transition-transform hover:scale-105"
-							>
-								<Image
-									src="https://go-skill-icons.vercel.app/api/icons?i=datagrip"
-									alt="DataGrip"
-									width={40}
-									height={40}
-									unoptimized
-									className="transition-transform group-hover:scale-110"
-								/>
-							</a>
-							<a
-								href="https://biomejs.dev/"
-								target="_blank"
-								rel="noopener noreferrer"
-								className="group bg-[#1F1B2E] p-2 rounded-lg transition-transform hover:scale-105"
-							>
-								<Image
-									src="https://go-skill-icons.vercel.app/api/icons?i=biome"
-									alt="Biome"
-									width={40}
-									height={40}
-									unoptimized
-									className="transition-transform group-hover:scale-110"
-								/>
-							</a>
-						</div>
-					</div>
-
-					{/* Databases & ORM */}
-					<div className="card-anime p-4 md:p-6">
-						<h4 className="text-lg font-medium text-[#ffb6c1] mb-4 tracking-wide">
-							Databases & ORM ✧*。
-						</h4>
-						<div className="flex flex-wrap gap-3">
-							<a
-								href="https://turso.tech/"
-								target="_blank"
-								rel="noopener noreferrer"
-								className="group bg-[#1F1B2E] p-2 rounded-lg transition-transform hover:scale-105"
-							>
-								<Image
-									src="https://go-skill-icons.vercel.app/api/icons?i=turso"
-									alt="Turso"
-									width={40}
-									height={40}
-									unoptimized
-									className="transition-transform group-hover:scale-110"
-								/>
-							</a>
-							<a
-								href="https://www.mysql.com/"
-								target="_blank"
-								rel="noopener noreferrer"
-								className="group bg-[#1F1B2E] p-2 rounded-lg transition-transform hover:scale-105"
-							>
-								<Image
-									src="https://skillicons.dev/icons?i=mysql"
-									alt="MySQL"
-									width={40}
-									height={40}
-									unoptimized
-									className="transition-transform group-hover:scale-110"
-								/>
-							</a>
-							<a
-								href="https://www.prisma.io/"
-								target="_blank"
-								rel="noopener noreferrer"
-								className="group bg-[#1F1B2E] p-2 rounded-lg transition-transform hover:scale-105"
-							>
-								<Image
-									src="https://skillicons.dev/icons?i=prisma"
-									alt="Prisma"
-									width={40}
-									height={40}
-									unoptimized
-									className="transition-transform group-hover:scale-110"
-								/>
-							</a>
-							<a
-								href="https://orm.drizzle.team/"
-								target="_blank"
-								rel="noopener noreferrer"
-								className="group bg-[#1F1B2E] p-2 rounded-lg transition-transform hover:scale-105"
-							>
-								<Image
-									src="https://go-skill-icons.vercel.app/api/icons?i=drizzle"
-									alt="Drizzle"
-									width={40}
-									height={40}
-									unoptimized
-									className="transition-transform group-hover:scale-110"
-								/>
-							</a>
-							<a
-								href="https://www.postgresql.org/"
-								target="_blank"
-								rel="noopener noreferrer"
-								className="group bg-[#1F1B2E] p-2 rounded-lg transition-transform hover:scale-105"
-							>
-								<Image
-									src="https://skillicons.dev/icons?i=postgresql"
-									alt="PostgreSQL"
-									width={40}
-									height={40}
-									unoptimized
-									className="transition-transform group-hover:scale-110"
-								/>
-							</a>
-							<a
-								href="https://docs.turso.tech/libsql"
-								target="_blank"
-								rel="noopener noreferrer"
-								className="group bg-[#1F1B2E] p-2 rounded-lg transition-transform hover:scale-105"
-							>
-								<Image
-									src="https://go-skill-icons.vercel.app/api/icons?i=libsql"
-									alt="LibSQL"
-									width={40}
-									height={40}
-									unoptimized
-									className="transition-transform group-hover:scale-110"
-								/>
-							</a>
-							<a
-								href="https://www.mongodb.com/"
-								target="_blank"
-								rel="noopener noreferrer"
-								className="group bg-[#1F1B2E] p-2 rounded-lg transition-transform hover:scale-105"
-							>
-								<Image
-									src="https://skillicons.dev/icons?i=mongodb"
-									alt="MongoDB"
-									width={40}
-									height={40}
-									unoptimized
-									className="transition-transform group-hover:scale-110"
-								/>
-							</a>
-						</div>
-					</div>
+					))}
 				</div>
 			</section>
 		</div>

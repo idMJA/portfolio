@@ -1,19 +1,14 @@
-import type { Metadata, Viewport } from "next";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
 	title: "Projects",
-	description: "Check out my portfolio projects",
+	description:
+		"Projects by Moehammad Joesoef Aldri (idMJA / MJBA): web apps, Discord bots, and tools built with Next.js, TypeScript, and Tailwind CSS.",
+	robots: { index: true, follow: true },
 };
 
-export const viewport: Viewport = {
-	width: "device-width",
-	initialScale: 1,
-};
+import type { ReactNode } from "react";
 
-export default function ProjectLayout({
-	children,
-}: {
-	children: React.ReactNode;
-}) {
+export default function Layout({ children }: { children: ReactNode }) {
 	return <>{children}</>;
 }

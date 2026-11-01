@@ -2,14 +2,16 @@ import { NextResponse } from "next/server";
 
 export async function GET() {
 	try {
-		const response = await fetch(
-			`${process.env.NEXT_PUBLIC_API_URL}/mal/anime-list`,
-			{
-				headers: {
-					"Content-Type": "application/json",
-				},
+		const apiUrl = process.env.API_URL;
+		if (!apiUrl) {
+			throw new Error("API URL not configured");
+		}
+		const response = await fetch(`${apiUrl}/mal/anime-list`, {
+			headers: {
+				"Content-Type": "application/json",
 			},
-		);
+			next: { revalidate: 3600 },
+		});
 
 		if (!response.ok) {
 			throw new Error("Failed to fetch anime list");

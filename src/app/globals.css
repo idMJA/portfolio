@@ -1,55 +1,125 @@
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=M+PLUS+Rounded+1c:wght@300;400;500;700&display=swap");
 @import "tailwindcss";
 
 @custom-variant dark (&:is(.dark *));
 
+@theme inline {
+	--color-background: hsl(var(--background));
+	--color-foreground: hsl(var(--foreground));
+	--color-card: hsl(var(--card));
+	--color-card-foreground: hsl(var(--card-foreground));
+	--color-popover: hsl(var(--popover));
+	--color-popover-foreground: hsl(var(--popover-foreground));
+	--color-primary: hsl(var(--primary));
+	--color-primary-foreground: hsl(var(--primary-foreground));
+	--color-secondary: hsl(var(--secondary));
+	--color-secondary-foreground: hsl(var(--secondary-foreground));
+	--color-muted: hsl(var(--muted));
+	--color-muted-foreground: hsl(var(--muted-foreground));
+	--color-accent: hsl(var(--accent));
+	--color-accent-foreground: hsl(var(--accent-foreground));
+	--color-destructive: hsl(var(--destructive));
+	--color-destructive-foreground: hsl(var(--destructive-foreground));
+	--color-border: hsl(var(--border));
+	--color-input: hsl(var(--input));
+	--color-ring: hsl(var(--ring));
+}
+
 :root {
-	--foreground-rgb: 255, 255, 255;
-	--background-start-rgb: 19, 17, 28;
-	--background-end-rgb: 8, 5, 16;
-	--background: 260 27% 8.8%;
-	--foreground: 0 0% 98%;
+	color-scheme: dark;
+	--foreground: 0 0% 100%;
+	--background: 0 0% 5%;
 
-	--card: 260 27% 11%;
-	--card-foreground: 0 0% 98%;
+	--card: 0 0% 8%;
+	--card-foreground: 0 0% 100%;
 
-	--popover: 260 27% 8.8%;
-	--popover-foreground: 0 0% 98%;
+	--popover: 0 0% 8%;
+	--popover-foreground: 0 0% 100%;
 
-	--primary: 351 100% 86%;
-	--primary-foreground: 355.7 100% 97.3%;
+	--primary: 351 76% 74%;
+	--primary-foreground: 0 0% 100%;
 
-	--secondary: 260 27% 15.9%;
-	--secondary-foreground: 0 0% 98%;
+	--secondary: 0 0% 12%;
+	--secondary-foreground: 0 0% 100%;
 
-	--muted: 260 27% 15%;
-	--muted-foreground: 240 5% 84.9%;
+	--muted: 0 0% 12%;
+	--muted-foreground: 0 0% 55%;
 
-	--accent: 351 100% 86%;
-	--accent-foreground: 0 0% 98%;
+	--accent: 351 76% 74%;
+	--accent-foreground: 0 0% 100%;
 
-	--destructive: 0 62.8% 30.6%;
-	--destructive-foreground: 0 0% 98%;
+	--destructive: 0 72% 51%;
+	--destructive-foreground: 0 0% 100%;
 
-	--border: 260 27% 15.9%;
-	--input: 260 27% 15.9%;
-	--ring: 351 100% 86%;
+	--border: 0 0% 15%;
+	--input: 0 0% 15%;
+	--ring: 351 76% 74%;
 
-	--radius: 0.75rem;
-	--chart-1: 351 100% 86%;
-	--chart-2: 351 100% 86%;
-	--chart-3: 351 100% 86%;
-	--chart-4: 351 100% 86%;
-	--chart-5: 351 100% 86%;
-	--sidebar-background: 260 27% 8.8%;
-	--sidebar-foreground: 240 5.3% 96.1%;
-	--sidebar-primary: 351 100% 86%;
-	--sidebar-primary-foreground: 0 0% 98%;
-	--sidebar-accent: 351 100% 86%;
-	--sidebar-accent-foreground: 240 5.9% 10%;
-	--sidebar-border: 260 27% 15.9%;
-	--sidebar-ring: 351 100% 86%;
-	--sidebar: hsl(260 27% 8.8%);
+	--radius: 0.625rem;
+	--chart-1: 351 76% 74%;
+	--chart-2: 0 0% 70%;
+	--chart-3: 351 70% 60%;
+	--chart-4: 0 0% 45%;
+	--chart-5: 351 60% 70%;
+
+	--sidebar-background: 0 0% 5%;
+	--sidebar-foreground: 0 0% 90%;
+	--sidebar-primary: 351 76% 74%;
+	--sidebar-primary-foreground: 0 0% 100%;
+	--sidebar-accent: 351 76% 74%;
+	--sidebar-accent-foreground: 0 0% 100%;
+	--sidebar-border: 0 0% 15%;
+	--sidebar-ring: 351 76% 74%;
+	--sidebar: hsl(0 0% 5%);
+}
+
+/* Light theme: auto via OS, overrides dark tokens */
+@media (prefers-color-scheme: light) {
+	:root {
+		color-scheme: light;
+		--foreground: 0 0% 12%;
+		--background: 0 0% 98%;
+
+		--card: 0 0% 100%;
+		--card-foreground: 0 0% 12%;
+
+		--popover: 0 0% 100%;
+		--popover-foreground: 0 0% 12%;
+
+		--primary: 351 76% 64%;
+		--primary-foreground: 0 0% 100%;
+
+		--secondary: 0 0% 96%;
+		--secondary-foreground: 0 0% 12%;
+
+		--muted: 0 0% 96%;
+		--muted-foreground: 0 0% 45%;
+
+		--accent: 351 76% 92%;
+		--accent-foreground: 351 76% 30%;
+
+		--destructive: 0 72% 51%;
+		--destructive-foreground: 0 0% 100%;
+
+		--border: 0 0% 88%;
+		--input: 0 0% 88%;
+		--ring: 351 76% 64%;
+
+		--chart-1: 351 76% 64%;
+		--chart-2: 0 0% 55%;
+		--chart-3: 351 70% 55%;
+		--chart-4: 0 0% 60%;
+		--chart-5: 351 60% 70%;
+
+		--sidebar-background: 0 0% 98%;
+		--sidebar-foreground: 0 0% 12%;
+		--sidebar-primary: 351 76% 64%;
+		--sidebar-primary-foreground: 0 0% 100%;
+		--sidebar-accent: 351 76% 92%;
+		--sidebar-accent-foreground: 351 76% 30%;
+		--sidebar-border: 0 0% 88%;
+		--sidebar-ring: 351 76% 64%;
+		--sidebar: hsl(0 0% 98%);
+	}
 }
 
 @layer utilities {
@@ -64,9 +134,12 @@
 	}
 	body {
 		@apply bg-[hsl(var(--background))] text-[hsl(var(--foreground))] antialiased;
-		background-image: url("/background.svg");
-		background-size: 200px;
-		font-family: "M PLUS Rounded 1c", "Poppins", sans-serif;
+		font-family:
+			var(--font-geist), system-ui, -apple-system, "Segoe UI", Roboto,
+			sans-serif;
+		font-feature-settings:
+			"liga" 1,
+			"calt" 1;
 	}
 	h1,
 	h2,
@@ -74,19 +147,164 @@
 	h4,
 	h5,
 	h6 {
-		font-family: "M PLUS Rounded 1c", sans-serif;
-		font-weight: 700;
+		font-family: var(--font-geist), system-ui, -apple-system, sans-serif;
+		font-weight: 600;
+		letter-spacing: -0.02em;
 	}
 }
 
+/* Geist tight letter-spacing system */
+.tracking-display {
+	letter-spacing: -0.05em;
+}
+
+.tracking-heading {
+	letter-spacing: -0.03em;
+}
+
+.tracking-sub {
+	letter-spacing: -0.02em;
+}
+
+/* Geist Mono for code / technical labels */
+.font-mono-geist {
+	font-family:
+		var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, Monaco,
+		"Liberation Mono", "Courier New", monospace;
+}
+
+/* Japanese text utilities (Noto Sans JP via next/font) */
+.font-jp {
+	font-family:
+		var(--font-jp), "Hiragino Kaku Gothic ProN", "Yu Gothic", system-ui,
+		sans-serif;
+}
+
+/* Vertical Japanese text (tategaki) */
+.jp-vertical {
+	writing-mode: vertical-rl;
+	text-orientation: upright;
+}
+
+/* Big ghost kanji watermark behind hero */
+.jp-watermark {
+	font-family: var(--font-jp), system-ui, sans-serif;
+	font-weight: 900;
+	writing-mode: vertical-rl;
+	text-orientation: upright;
+	line-height: 1;
+	letter-spacing: 0.35em;
+	color: hsl(351 76% 74% / 0.05);
+	user-select: none;
+}
+
+.jp-watermark span {
+	transition: color 0.6s ease;
+}
+
+.jp-watermark:hover {
+	color: hsl(351 76% 74% / 0.14);
+}
+
+/* Shadow-as-border system (Vercel signature) */
+.shadow-border {
+	box-shadow: 0px 0px 0px 1px hsl(var(--border));
+}
+
+.shadow-card {
+	box-shadow:
+		0px 0px 0px 1px hsl(var(--border)),
+		0px 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+.shadow-card-hover {
+	box-shadow:
+		0px 0px 0px 1px hsl(var(--border)),
+		0px 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+/* Card component */
+.card-modern {
+	background: var(--color-card);
+	color: var(--color-card-foreground);
+	border-radius: var(--radius);
+	box-shadow:
+		0px 0px 0px 1px hsl(var(--border)),
+		0px 2px 4px rgba(0, 0, 0, 0.08);
+	transition: box-shadow 0.2s ease;
+}
+
+.card-modern:hover {
+	box-shadow:
+		0px 0px 0px 1px hsl(var(--border)),
+		0px 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+/* Button system */
+.btn-primary {
+	background: var(--color-foreground);
+	color: var(--color-background);
+	padding: 8px 16px;
+	border-radius: var(--radius);
+	font-size: 0.875rem;
+	font-weight: 500;
+	transition:
+		background 0.15s ease,
+		opacity 0.15s ease;
+}
+
+.btn-primary:hover {
+	opacity: 0.85;
+}
+
+.btn-ghost {
+	background: transparent;
+	color: var(--color-foreground);
+	padding: 8px 16px;
+	border-radius: var(--radius);
+	font-size: 0.875rem;
+	font-weight: 500;
+	box-shadow: 0px 0px 0px 1px hsl(var(--border));
+	transition:
+		background 0.15s ease,
+		box-shadow 0.15s ease;
+}
+
+.btn-ghost:hover {
+	background: var(--color-muted);
+	box-shadow: 0px 0px 0px 1px hsl(var(--border));
+}
+
+/* Badge system */
+.badge {
+	display: inline-flex;
+	align-items: center;
+	padding: 2px 10px;
+	border-radius: 9999px;
+	font-size: 0.75rem;
+	font-weight: 500;
+}
+
+.badge-subtle {
+	background: hsl(351 76% 74% / 0.1);
+	color: hsl(351 76% 74%);
+}
+
+/* Focus ring for accessibility */
+*:focus-visible {
+	outline: 2px solid hsl(351 76% 74% / 0.7);
+	outline-offset: 2px;
+}
+
+/* Animations */
 .animate-in {
-	animation: animate-in 0.5s ease-in-out;
+	animation: animate-in 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @keyframes animate-in {
 	from {
 		opacity: 0;
-		transform: translateY(10px);
+		transform: translateY(12px);
 	}
 	to {
 		opacity: 1;
@@ -94,73 +312,157 @@
 	}
 }
 
-.sakura {
-	position: fixed;
-	z-index: 1;
+.animate-fade {
+	animation: fade 0.4s ease-out;
+}
+
+@keyframes fade {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+	width: 6px;
+	height: 6px;
+}
+
+::-webkit-scrollbar-track {
+	background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+	background: hsl(0 0% 20%);
+	border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+	background: hsl(0 0% 30%);
+}
+
+/* Selection */
+::selection {
+	background: hsl(351 76% 64% / 0.3);
+	color: hsl(var(--foreground));
+}
+
+/* Anime accent: sakura petals falling over the whole viewport */
+.petal {
+	position: absolute;
+	top: -20px;
+	border-radius: 70% 30% 60% 40% / 60% 40% 70% 30%;
+	background: linear-gradient(
+		135deg,
+		hsl(351 76% 74% / 0.55),
+		hsl(351 76% 74% / 0.2)
+	);
+	box-shadow: inset 0 0 0 1px hsl(351 76% 74% / 0.15);
+	animation-name: petal-fall;
+	animation-timing-function: linear;
+	animation-iteration-count: infinite;
+}
+
+@keyframes petal-fall {
+	0% {
+		transform: translate(0, -20px) rotate(0deg);
+		opacity: 0;
+	}
+	8% {
+		opacity: 0.55;
+	}
+	92% {
+		opacity: 0.55;
+	}
+	100% {
+		transform: translate(0, 105vh) rotate(300deg);
+	}
+}
+
+/* Inner element: horizontal sway layered under the fall */
+.petal-sway {
+	display: block;
+	width: 100%;
+	height: 100%;
+	border-radius: inherit;
+	background: inherit;
+	box-shadow: inherit;
+	animation-name: petal-sway;
+	animation-timing-function: ease-in-out;
+	animation-iteration-count: infinite;
+}
+
+@keyframes petal-sway {
+	0%,
+	100% {
+		transform: translateX(14px) rotate(6deg);
+	}
+	50% {
+		transform: translateX(-14px) rotate(-6deg);
+	}
+}
+
+/* Faint sakura glow wash behind content */
+.petal-glow {
+	position: absolute;
+	inset: 0;
+	background:
+		radial-gradient(
+			58rem 30rem at 85% -10%,
+			hsl(351 76% 74% / 0.07),
+			transparent 60%
+		),
+		radial-gradient(
+			46rem 26rem at 8% 110%,
+			hsl(351 76% 74% / 0.05),
+			transparent 60%
+		);
 	pointer-events: none;
 }
 
-.sakura-animation {
-	animation: fall 10s linear forwards;
-}
-
-@keyframes fall {
-	0% {
-		transform: translateY(-10%) rotate(0deg);
-		opacity: 0;
-	}
-	10% {
-		opacity: 1;
-	}
-	90% {
-		opacity: 1;
-	}
-	100% {
-		transform: translateY(100vh) rotate(360deg);
-		opacity: 0;
+@media (prefers-reduced-motion: reduce) {
+	.petal {
+		animation: none;
+		opacity: 0.18;
+		top: 40vh;
 	}
 }
 
-/* Glowing text effect */
-.text-glow {
-	text-shadow:
-		0 0 10px rgba(255, 182, 193, 0.7),
-		0 0 20px rgba(255, 182, 193, 0.5),
-		0 0 30px rgba(255, 182, 193, 0.3);
-}
-
-/* Anime-style button */
-.btn-anime {
-	@apply bg-gradient-to-r from-[#ffb6c1] to-[#ffb6c1] hover:from-[#ffb6c1] hover:to-[#ffb6c1];
-	@apply px-6 py-2 rounded-full text-white font-medium shadow-md transition-all duration-300;
-	@apply hover:shadow-lg hover:scale-105 active:scale-95;
-}
-
-/* Card with anime-style border */
-.card-anime {
-	@apply rounded-xl overflow-hidden border-2 border-[#ffb6c1];
-	@apply bg-[#13111C];
-	@apply transition-all duration-300 hover:shadow-[0_0_20px_rgba(255,182,193,0.5)];
-}
-
-.dark {
-	--sidebar: hsl(260 27% 8.8%);
-	--sidebar-foreground: hsl(240 4.8% 95.9%);
-	--sidebar-primary: hsl(351 100% 86%);
-	--sidebar-primary-foreground: hsl(0 0% 100%);
-	--sidebar-accent: hsl(351 100% 86%);
-	--sidebar-accent-foreground: hsl(240 4.8% 95.9%);
-	--sidebar-border: hsl(260 27% 15.9%);
-	--sidebar-ring: hsl(351 100% 86%);
-}
-
-@theme inline {
-	--color-sidebar: var(--sidebar);
-	--color-sidebar-foreground: var(--sidebar-foreground);
-	--color-sidebar-primary: var(--sidebar-primary);
-	--color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-	--color-sidebar-accent: var(--sidebar-accent);
-	--color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-	--color-sidebar-border: var(--sidebar-border);
-	--color-sidebar-ring: var(--sidebar-ring);
+/* ============================================
+   LIGHT MODE (auto via OS) - decorative + fixed elements
+   Placed at end so cascade wins over base rules
+   ============================================ */
+@media (prefers-color-scheme: light) {
+	.jp-watermark {
+		color: hsl(351 76% 45% / 0.08);
+	}
+	.jp-watermark:hover {
+		color: hsl(351 76% 45% / 0.2);
+	}
+	.petal {
+		background: linear-gradient(
+			135deg,
+			hsl(351 76% 60% / 0.4),
+			hsl(351 76% 70% / 0.15)
+		);
+	}
+	.petal-glow {
+		background:
+			radial-gradient(
+				58rem 30rem at 85% -10%,
+				hsl(351 76% 70% / 0.1),
+				transparent 60%
+			),
+			radial-gradient(
+				42rem 28rem at 12% 110%,
+				hsl(351 76% 70% / 0.08),
+				transparent 60%
+			);
+	}
+	::selection {
+		background: hsl(351 76% 50% / 0.25);
+	}
 }

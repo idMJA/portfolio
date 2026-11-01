@@ -1,19 +1,14 @@
-import type { Metadata, Viewport } from "next";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
 	title: "Anime List",
-	description: "MyAnimeList anime collection and stats",
+	description:
+		"Anime lists and stats tracked by Moehammad Joesoef Aldri (idMJA).",
+	robots: { index: false, follow: false },
 };
 
-export const viewport: Viewport = {
-	width: "device-width",
-	initialScale: 1,
-};
+import type { ReactNode } from "react";
 
-export default function AnimeLayout({
-	children,
-}: {
-	children: React.ReactNode;
-}) {
+export default function Layout({ children }: { children: ReactNode }) {
 	return <>{children}</>;
 }

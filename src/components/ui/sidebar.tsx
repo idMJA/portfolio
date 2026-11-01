@@ -602,6 +602,7 @@ function SidebarMenuSkeleton({
 	showIcon?: boolean;
 }) {
 	const width = React.useMemo(() => {
+		// eslint-disable-next-line react-hooks/purity -- intentional random skeleton width, stable across renders
 		return `${Math.floor(Math.random() * 40) + 50}%`;
 	}, []);
 

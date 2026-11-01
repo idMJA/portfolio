@@ -1,19 +1,28 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+	title: "Code Stats",
+	description:
+		"Coding activity and language stats for Moehammad Joesoef Aldri via WakaTime.",
+	robots: { index: false, follow: false },
+};
+
 import WakaTimeStats from "@/components/WakaTimeStats";
 
 export default function StatsPage() {
 	return (
-		<div className="container mx-auto px-4 md:px-8 py-4 md:py-6 max-w-7xl">
-			<section className="mb-8 md:mb-12">
-				<h1 className="text-3xl md:text-4xl font-bold mb-4 tracking-wide">
-					<span className="text-[#ffb6c1]">Code</span>
-					<span className="text-white"> Stats</span>
+		<div className="container mx-auto px-4 md:px-8 py-8 max-w-7xl">
+			<section className="mb-8">
+				<h1 className="text-3xl md:text-4xl font-semibold tracking-display mb-2 text-foreground">
+					Code Stats
 				</h1>
+				<p className="text-foreground/70 text-sm font-mono-geist uppercase tracking-wide mb-8">
+					wakatime stats
+				</p>
 
-				<p className="text-gray-300 leading-relaxed mb-8">
-					Here are my all-time coding statistics from WakaTime, showing my total
-					programming activity since I started tracking. This includes the total
-					time spent coding, languages I use most frequently, and my preferred
-					code editors.
+				<p className="text-foreground/80 leading-relaxed mb-8 text-[15px] max-w-2xl">
+					All-time coding statistics from WakaTime. Total time spent, languages
+					I use most frequently, and my preferred code editors.
 				</p>
 
 				<div className="max-w-3xl">

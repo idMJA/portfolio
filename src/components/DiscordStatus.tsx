@@ -37,10 +37,75 @@ export default function DiscordStatus() {
 	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
-		async function fetchDiscordStatus() {
+		const DISCORD_USER_ID = "885731228874051624";
+		let heartbeatInterval: NodeJS.Timeout | null = null;
+		let socket: WebSocket | null = null;
+		let isCleanedUp = false;
+
+		function connectWs() {
+			try {
+				socket = new WebSocket("wss://api.lanyard.rest/socket");
+
+				socket.onopen = () => {};
+
+				socket.onmessage = (event) => {
+					try {
+						const message = JSON.parse(event.data);
+						const { op, d } = message;
+
+						// Opcode 1: Hello from server, initiates heartbeat
+						if (op === 1) {
+							const { heartbeat_interval } = d;
+							heartbeatInterval = setInterval(() => {
+								if (socket?.readyState === WebSocket.OPEN) {
+									socket.send(JSON.stringify({ op: 3 }));
+								}
+							}, heartbeat_interval);
+
+							// Initialize connection with user ID
+							if (socket?.readyState === WebSocket.OPEN) {
+								socket.send(
+									JSON.stringify({
+										op: 2,
+										d: {
+											subscribe_to_id: DISCORD_USER_ID,
+										},
+									}),
+								);
+							}
+						}
+
+						// Opcode 0: Event dispatched (INIT_STATE or PRESENCE_UPDATE)
+						if (op === 0) {
+							setData(d);
+							setLoading(false);
+						}
+					} catch (e) {
+						console.error("Error parsing Lanyard WS message:", e);
+					}
+				};
+
+				socket.onerror = () => {
+					// Fallback to HTTP fetch if WebSocket fails
+					fetchFallback();
+				};
+
+				socket.onclose = () => {
+					if (heartbeatInterval) clearInterval(heartbeatInterval);
+					// Reconnect after 5s if not unmounted
+					if (!isCleanedUp) {
+						setTimeout(connectWs, 5000);
+					}
+				};
+			} catch {
+				fetchFallback();
+			}
+		}
+
+		async function fetchFallback() {
 			try {
 				const response = await fetch(
-					"https://api.lanyard.rest/v1/users/885731228874051624",
+					`https://api.lanyard.rest/v1/users/${DISCORD_USER_ID}`,
 				);
 				const json = await response.json();
 				if (json.success) {
@@ -53,20 +118,23 @@ export default function DiscordStatus() {
 			}
 		}
 
-		fetchDiscordStatus();
-		// Refresh every 30 seconds
-		const interval = setInterval(fetchDiscordStatus, 30000);
-		return () => clearInterval(interval);
+		connectWs();
+
+		return () => {
+			isCleanedUp = true;
+			if (heartbeatInterval) clearInterval(heartbeatInterval);
+			if (socket) socket.close();
+		};
 	}, []);
 
 	if (loading || !data) {
 		return (
 			<div className="bg-[#0f0f0f] rounded-lg p-4 max-w-xl animate-pulse">
 				<div className="flex items-start space-x-3">
-					<div className="w-16 h-16 bg-zinc-800 rounded-full" />
+					<div className="w-16 h-16 bg-card rounded-full" />
 					<div className="flex-1 space-y-2">
-						<div className="h-4 bg-zinc-800 rounded w-1/4" />
-						<div className="h-3 bg-zinc-800 rounded w-1/3" />
+						<div className="h-4 bg-card rounded w-1/4" />
+						<div className="h-3 bg-card rounded w-1/3" />
 					</div>
 				</div>
 			</div>
@@ -125,7 +193,7 @@ export default function DiscordStatus() {
 							/>
 						)}
 						<div
-							className={`absolute bottom-0 right-0 w-4 h-4 rounded-full border-[3px] border-[#0f0f0f] 
+							className={`absolute bottom-0 right-0 w-4 h-4 rounded-full border-[3px] border-border 
                 ${statusColors[discord_status as keyof typeof statusColors]}`}
 						/>
 					</div>
@@ -135,13 +203,13 @@ export default function DiscordStatus() {
 					<div className="flex items-center justify-between">
 						<div className="max-w-[70%]">
 							<div className="flex items-center gap-1 flex-wrap">
-								<h3 className="font-['Aldrich'] font-semibold text-white">
+								<h3 className="font-['Aldrich'] font-semibold text-foreground">
 									{discord_user.display_name}
 								</h3>
 								{/* Clan Tag with Badge */}
 								{discord_user.clan && (
 									<div className="flex items-center gap-1">
-										<div className="flex items-center gap-1 text-xs text-gray-400 border border-gray-700 rounded px-1.5 py-0.5">
+										<div className="flex items-center gap-1 text-xs text-muted-foreground border border-border rounded px-1.5 py-0.5">
 											{discord_user.clan.badge && (
 												<Image
 													src={`https://cdn.discordapp.com/clan-badges/${discord_user.clan.identity_guild_id}/${discord_user.clan.badge}.webp`}
@@ -157,11 +225,13 @@ export default function DiscordStatus() {
 									</div>
 								)}
 							</div>
-							<p className="text-sm text-gray-400">@{discord_user.username}</p>
+							<p className="text-sm text-muted-foreground">
+								@{discord_user.username}
+							</p>
 
 							{/* Custom Status */}
 							{customStatus && (customStatus.emoji || customStatus.state) && (
-								<div className="flex items-center gap-1 text-sm text-gray-400 mt-1">
+								<div className="flex items-center gap-1 text-sm text-muted-foreground mt-1">
 									{customStatus.emoji && (
 										<Image
 											src={`https://cdn.discordapp.com/emojis/${customStatus.emoji.id}.webp?size=128`}
@@ -178,17 +248,17 @@ export default function DiscordStatus() {
 						{/* Platform Information - Horizontal layout */}
 						<div className="flex items-center gap-2">
 							{active_on_discord_desktop && (
-								<div className="w-4 h-4 text-white" title="Desktop">
+								<div className="w-4 h-4 text-foreground" title="Desktop">
 									{platformIcons.desktop}
 								</div>
 							)}
 							{active_on_discord_web && (
-								<div className="w-4 h-4 text-white" title="Browser">
+								<div className="w-4 h-4 text-foreground" title="Browser">
 									{platformIcons.web}
 								</div>
 							)}
 							{active_on_discord_mobile && (
-								<div className="w-4 h-4 text-white" title="Mobile">
+								<div className="w-4 h-4 text-foreground" title="Mobile">
 									{platformIcons.mobile}
 								</div>
 							)}
@@ -222,13 +292,17 @@ export default function DiscordStatus() {
 							</div>
 						</div>
 						<div className="flex-1">
-							<p className="font-['Aldrich'] font-medium text-white">
+							<p className="font-['Aldrich'] font-medium text-foreground">
 								{spotify.song}
 							</p>
-							<p className="text-gray-400 text-sm">by {spotify.artist}</p>
-							<p className="text-gray-400 text-sm">on {spotify.album}</p>
+							<p className="text-muted-foreground text-sm">
+								by {spotify.artist}
+							</p>
+							<p className="text-muted-foreground text-sm">
+								on {spotify.album}
+							</p>
 							{spotify.timestamps?.start && (
-								<p className="text-gray-500 text-xs mt-1">
+								<p className="text-muted-foreground text-xs mt-1">
 									{formatTimestamp(spotify.timestamps.start)}
 								</p>
 							)}
@@ -272,17 +346,21 @@ export default function DiscordStatus() {
 							)}
 						</div>
 						<div className="flex-1">
-							<p className="font-['Aldrich'] font-medium text-white">
+							<p className="font-['Aldrich'] font-medium text-foreground">
 								{mainActivity.name}
 							</p>
 							{mainActivity.details && (
-								<p className="text-gray-400 text-sm">{mainActivity.details}</p>
+								<p className="text-muted-foreground text-sm">
+									{mainActivity.details}
+								</p>
 							)}
 							{mainActivity.state && (
-								<p className="text-gray-400 text-sm">{mainActivity.state}</p>
+								<p className="text-muted-foreground text-sm">
+									{mainActivity.state}
+								</p>
 							)}
 							{mainActivity.timestamps?.start && (
-								<p className="text-gray-500 text-xs mt-1">
+								<p className="text-muted-foreground text-xs mt-1">
 									{formatTimestamp(mainActivity.timestamps.start)}
 								</p>
 							)}

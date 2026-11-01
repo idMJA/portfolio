@@ -4,7 +4,7 @@ import type { LastFmTrack } from "@/types/music";
 
 export async function GET() {
 	try {
-		const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+		const apiUrl = process.env.API_URL;
 		if (!apiUrl) {
 			throw new Error("API URL not configured");
 		}
@@ -13,7 +13,7 @@ export async function GET() {
 			headers: {
 				"Content-Type": "application/json",
 			},
-			cache: "no-store",
+			next: { revalidate: 30 },
 		});
 
 		if (!response.ok) {

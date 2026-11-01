@@ -33,14 +33,16 @@ export default function AnimePage() {
 		}
 	}, []);
 
+	/* eslint-disable react-hooks/set-state-in-effect -- fetch anime list on mount */
 	useEffect(() => {
 		fetchAnimeList();
 	}, [fetchAnimeList]);
+	/* eslint-enable react-hooks/set-state-in-effect */
 
 	if (isLoading) {
 		return (
 			<div className="flex items-center justify-center min-h-[400px]">
-				<div className="text-zinc-400">Loading anime list...</div>
+				<div className="text-muted-foreground">Loading anime list...</div>
 			</div>
 		);
 	}
@@ -52,7 +54,7 @@ export default function AnimePage() {
 				<button
 					type="button"
 					onClick={fetchAnimeList}
-					className="px-4 py-2 bg-[#ffb6c1]/20 hover:bg-[#ffb6c1]/30 text-[#ffb6c1] rounded-lg border border-[#ffb6c1]/30 transition-colors"
+					className="px-4 py-2 bg-muted/50 hover:bg-muted/80 text-foreground/90 rounded-md border border-border transition-colors"
 				>
 					Try Again
 				</button>
@@ -65,10 +67,10 @@ export default function AnimePage() {
 			<div className="space-y-6">
 				<div className="flex justify-between items-center">
 					<div className="space-y-2">
-						<h1 className="text-4xl font-bold bg-gradient-to-r from-[#ffb6c1] to-[#ffb6c1] text-transparent bg-clip-text">
+						<h1 className="text-4xl font-semibold tracking-display text-foreground">
 							My Anime List
 						</h1>
-						<p className="text-zinc-400">
+						<p className="text-muted-foreground">
 							Here&apos;s my anime watching journey, powered by MyAnimeList.
 						</p>
 					</div>
@@ -76,7 +78,7 @@ export default function AnimePage() {
 						href="https://myanimelist.net/profile/1MJ"
 						target="_blank"
 						rel="noopener noreferrer"
-						className="flex items-center gap-2 px-4 py-2 bg-[#ffb6c1]/20 hover:bg-[#ffb6c1]/30 text-[#ffb6c1] rounded-lg border border-[#ffb6c1]/30 transition-colors whitespace-nowrap"
+						className="flex items-center gap-2 px-4 py-2 bg-muted/50 hover:bg-muted/80 text-foreground/90 rounded-md border border-border transition-colors whitespace-nowrap"
 					>
 						<span>View Profile</span>
 						<svg
